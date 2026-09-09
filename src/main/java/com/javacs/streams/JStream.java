@@ -430,10 +430,40 @@ public class JStream {
                     .orElseThrow();
         }
     }
-    private static final Predicate<Integer> isEven = x -> x % 2 == 0;
-    private static final Predicate<Integer> isPositive = x -> x > 0;
-    private static final Predicate<Integer> isEvenAndPositive = isEven.and(isPositive);
-    public boolean idEvenAndPositive(Integer integer) {
-        return isEvenAndPositive.test(integer);
+    static class JPredicate {
+        private static final Predicate<Integer> isEven = x -> x % 2 == 0;
+        private static final Predicate<Integer> isOdd = isEven.negate();
+        private static final Predicate<Integer> isPositive = x -> x > 0;
+        private static final Predicate<Integer> isNegative = x -> x < 0;
+        private static final Predicate<Integer> isZero = isPositive.or(isNegative).negate();
+        private static final Predicate<Integer> isEvenAndPositive = isEven.and(isPositive);
+        private static final Predicate<String> isEqualToOreo = Predicate.isEqual("Oreo");
+        private static final List<Integer> numbers =
+                Arrays.asList(
+                        -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5
+                );
+        public List<Integer> homemadePredicate() {
+            return numbers.stream()
+                    .filter(JPredicate::isEven)
+                    .filter(JPredicate::isPositive)
+                    .map(number -> (int) Math.pow(number, 2))
+                    .toList();
+        }
+        public static boolean isEven(Integer integer) {
+            return isEven.test(integer);
+        }
+        public static boolean isOdd(Integer integer) {
+            return isOdd.test(integer);
+        }
+        public static boolean isPositive(Integer integer) {
+            return isPositive.test(integer);
+        }
+        public static boolean isEvenAndPositive(Integer integer) {
+            return isEvenAndPositive.test(integer);
+        }
+        public static boolean isEqualToOreo(String string) {
+            return isEqualToOreo.test(string);
+        }
     }
+
 }
