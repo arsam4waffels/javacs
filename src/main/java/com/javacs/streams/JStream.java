@@ -3,7 +3,7 @@ package com.javacs.streams;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 public class JStream {
 
@@ -277,6 +277,58 @@ public class JStream {
                     .filter(item -> item.startsWith("c"))
                     .map(String::toUpperCase)
                     .toList();
+        }
+    }
+
+    /**
+     * <h5>Exercise centered on Stream</h5>
+     * <p>I asked AI to give me some exercises to master the concept
+     * of Streams in Java. I requested that the exercises be close
+     * to real-world scenarios.</p>
+     */
+    static class Exercise {
+        public void ex1() {
+            final List<Integer> numbers = List.of(
+                    3, 8, 12, 5, 17, 20, 4, 9, 30
+            );
+            List<Integer> even = numbers.stream()
+                    .filter(number -> number % 2 == 0)
+                    .toList();
+        }
+        public void ex2() {
+            final List<String> names = List.of(
+                    "Ali", "Arsam", "Sara", "John", "Reza"
+            );
+            List<String> upper = names.stream()
+                    .map(String::toUpperCase)
+                    .toList();
+        }
+        public void ex3() {
+            final List<Integer> numbers = List.of(
+                    2, 7, 12, 15, 18, 21, 24, 30
+            );
+            List<Integer> multiCondition = numbers.stream()
+                    .filter(number -> number % 2 == 0)
+                    .filter(number -> number > 10)
+                    .toList();
+        }
+        public void ex4() {
+            final List<Integer> numbers = List.of(
+                    10, 55, 23, 78, 91, 42, 67, 12, 88
+            );
+            long higher = numbers.stream()
+                    .filter(number -> number > 50)
+                    .count();
+        }
+        public void ex5() {
+            final List<Integer> numbers = List.of(
+                    15, 42, 7, 89, 23, 64, 91, 31
+            );
+            Optional<Integer> max1 = numbers.stream()
+                    .max(Integer::compare);
+            Integer max2 = numbers.stream()
+                    .max(Integer::compare)
+                    .orElse(0);
         }
     }
 }
