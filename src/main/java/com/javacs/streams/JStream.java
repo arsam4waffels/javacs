@@ -1,13 +1,12 @@
 package com.javacs.streams;
 
-import jdk.dynalink.linker.ConversionComparator;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalDouble;
+import java.util.function.Predicate;
 
 public class JStream {
 
@@ -430,5 +429,11 @@ public class JStream {
                     .max(Comparator.comparing(Product::price))
                     .orElseThrow();
         }
+    }
+    private static final Predicate<Integer> isEven = x -> x % 2 == 0;
+    private static final Predicate<Integer> isPositive = x -> x > 0;
+    private static final Predicate<Integer> isEvenAndPositive = isEven.and(isPositive);
+    public boolean idEvenAndPositive(Integer integer) {
+        return isEvenAndPositive.test(integer);
     }
 }
