@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalDouble;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class JStream {
@@ -463,6 +464,33 @@ public class JStream {
         }
         public static boolean isEqualToOreo(String string) {
             return isEqualToOreo.test(string);
+        }
+    }
+    static class JFunction {
+        private final Function<Integer, Integer> doubleIt =
+                num -> Math.multiplyExact(num, 2);
+        public Integer doubleIt(Integer integer) {
+            return doubleIt.apply(integer);
+        }
+        private final Function<Integer, String> intToString =
+                num -> "Number is : " + num;
+        public String intToString(Integer integer) {
+            return intToString.apply(integer);
+        }
+        private final Function<String, Boolean> isTooShort =
+                name -> name.length() < 5;
+        public boolean intToString(String name) {
+            return isTooShort.apply(name);
+        }
+        final Function<Integer, Integer> addOne = x -> x + 1;
+        final Function<Integer, Integer> tripleIt = x -> x * 3;
+        final Function<Integer, Integer> addThenTriple = addOne.andThen(tripleIt);
+        public int addThenTriple(Integer integer) {
+            return addThenTriple.apply(integer);
+        }
+        final Function<Integer, Integer> tripleThenAdd = addOne.compose(tripleIt);
+        public int tripleThenAdd(Integer integer) {
+            return tripleThenAdd.apply(integer);
         }
     }
 
