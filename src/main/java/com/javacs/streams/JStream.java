@@ -2,6 +2,7 @@ package com.javacs.streams;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -329,6 +330,62 @@ public class JStream {
             Integer max2 = numbers.stream()
                     .max(Integer::compare)
                     .orElse(0);
+        }
+        public void ex6() {
+            final List<Integer> numbers = List.of(
+                    9, 2, 7, 1, 5, 8, 3
+            );
+            var VAR = numbers.stream()
+                    .sorted()
+                    .limit(3)
+                    .toList();
+        }
+        public void ex7() {
+            final List<String> names = List.of(
+                    "Arsam", "Ali", "Alexander", "Sara",
+                    "John", "Amir", "Andrew", "Reza"
+            );
+            var VAR = names.stream()
+                    .filter(name -> name.startsWith("A"))
+                    .filter(name -> name.length() > 5)
+                    .sorted()
+                    .toList();
+        }
+        public void ex8() {
+            final List<Integer> numbers = List.of(
+                    1, 2, 3, 4, 5, 6, 7, 8
+            );
+            List<Integer> VAR = numbers.stream()
+                    .filter(number -> number % 2 == 0)
+                    .map(number -> (int) Math.pow(number, 2))
+                    .toList();
+        }
+        public void ex91011() {
+            record User(
+                    String name,
+                    int age,
+                    String city
+            ) {}
+            List<User> users = List.of(
+                    new User("Arsam", 21, "Tehran"),
+                    new User("Ali", 17, "Shiraz"),
+                    new User("Sara", 25, "Tehran"),
+                    new User("John", 30, "Tabriz"),
+                    new User("Reza", 19, "Tehran"),
+                    new User("Mary", 16, "Shiraz")
+            );
+            var VAR9 = users.stream()
+                    .filter(user -> user.age >= 18)
+                    .toList();
+            var VAR10 = users.stream()
+                    .filter(user -> user.city.equals("Tehran"))
+                    .map(User::name)
+                    .toList();
+            var VAR11 = users.stream()
+                    .sorted(Comparator
+                            .comparing(User::age)
+                            .reversed())
+                    .toList();
         }
     }
 }
