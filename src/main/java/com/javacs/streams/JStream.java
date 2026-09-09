@@ -377,14 +377,14 @@ public class JStream {
                     new User("Reza", 19, "Tehran"),
                     new User("Mary", 16, "Shiraz")
             );
-            var VAR9 = users.stream()
+            List<User> legalAge = users.stream()
                     .filter(user -> user.age >= 18)
                     .toList();
-            var VAR10 = users.stream()
+            List<String> peopleInCity = users.stream()
                     .filter(user -> user.city.equals("Tehran"))
                     .map(User::name)
                     .toList();
-            var VAR11 = users.stream()
+            List<User> ageComparison = users.stream()
                     .sorted(Comparator
                             .comparing(User::age)
                             .reversed())
