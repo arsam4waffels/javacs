@@ -5,6 +5,17 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class MyPipeline<T> implements Pipeline<T>{
+
+    private final List<T> elements;
+
+    public MyPipeline(List<T> elements) {
+        this.elements = elements;
+    }
+
+    public static <T> MyPipeline<T> of(List<T> elements) {
+        return new MyPipeline<>(elements);
+    }
+
     @Override
     public Pipeline<T> filter(Predicate<T> predicate) {
         return null;
