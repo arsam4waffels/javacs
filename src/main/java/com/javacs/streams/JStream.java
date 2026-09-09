@@ -1,6 +1,9 @@
 package com.javacs.streams;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class JStream {
 
@@ -13,10 +16,13 @@ public class JStream {
      * <p> {@code stringNameList} A list of strings. It contains a few names. </p>
      * <p> {@code people} An array that stores objects of the {@link Person} record class. </p>
      */
-    private final static List<Integer> integerList;
-    private final static List<Integer> duplicateIntegerList;
-    private final static List<String> stringNameList;
-    private final static List<Person> people;
+    private static final List<Integer> integerList;
+    private static final List<Integer> duplicateIntegerList;
+    private static final List<String> stringNameList;
+    private static final List<Person> people;
+    private static final List<List<String>> classroom;
+    private static final List<String> sentences;
+    private static final List<Shopping> orders;
 
     static {
         integerList = List.of(1,2,3,4,5,6,7,8,9);
@@ -26,6 +32,20 @@ public class JStream {
                 new Person("Arsam", 21),
                 new Person("Farzam", 21),
                 new Person("John", 18)
+        );
+        classroom = List.of(
+                List.of("x", "y", "z"),
+                List.of("a", "b"),
+                List.of("i", "j", "k")
+        );
+        sentences = List.of(
+                "Arsam loves coffee",
+                "Oreo is a black cat",
+                "Java is cool"
+        );
+        orders = List.of(
+                new Shopping("Arsam", List.of("coffee", "Cat-food", "book")),
+                new Shopping("Oreo",   List.of("Cat-food", "Muffin-toy", "Mouse-toy"))
         );
     }
 
@@ -155,6 +175,30 @@ public class JStream {
                 .forEach(System.out::println);
     }
 
+    /**
+     * <b>flatMap() vs map()</b>
+     * <p>{@code map} is sufficient for nested or multidimensional lists.
+     * If we want to isolate individual elements, we can use
+     * {@code flatMap} to apply a condition to each member.</p>
+     */
+    public List<String> separateStudents() {
+        return classroom.stream()
+                .flatMap(Collection::stream)
+                .toList();
+    }
+    /**
+     * <p>If I had used just {@code map} here, the words would have been split
+     * into their own separate arrays; however, by using {@code flatMap}, every
+     * single word from the different sentences was placed into a single,
+     * organized array.</p>
+     * @return [Arsam, loves, coffee, Oreo, is, a, black, cat, Java, is, cool]
+     */
+    public List<String> separateSentence() {
+        return sentences.stream()
+                .flatMap(sentence -> Arrays.stream(sentence.split(" ")))
+                .toList();
+    }
+
     record Person (String name, int age) {
         public static List<Person> validAge(List<Person> people) {
             return people.stream()
@@ -185,6 +229,53 @@ public class JStream {
                             person.name,
                             person.age >= 18
                     ))
+                    .toList();
+        }
+    }
+    record Shopping (String customer, List<String> items) {}
+    static class ProcessShopping {
+        public List<String> itemsOrdered() {
+            return orders.stream()
+                    .flatMap(item -> item.items.stream())
+                    .toList();
+        }
+
+        /**
+         * <b>Number of repetitions of a specific item</b>
+         * <p>First, we stream the 2D list using {@code flatMap}
+         * to obtain a direct, linear sequence of orders.
+         * Then, we filter the list and determine the
+         * frequency of each item's occurrence.</p>
+         * @param order
+         * @return 2 [cause Cat-food repeated twice]
+         */
+        public long duplicateItemOrder(String order) {
+            return orders.stream()
+                    .flatMap(item -> item.items.stream())
+                    .filter(item -> item.equals(order))
+                    .count();
+        }
+        public List<String> uniqueOrders() {
+            return orders.stream()
+                    .flatMap(item -> item.items.stream())
+                    .distinct() // <-- filter only unique ones
+                    .toList();
+        }
+
+        /**
+         * <b>List filtering system</b>
+         * <p>First, we sort the list. In the second step, we remove
+         * duplicate items. In the third step, we check which items
+         * start with the letter 'c', convert them to uppercase, and
+         * create a list of strings from the final result.</p>
+         * @return [COFFEE]
+         */
+        public List<String> foo() {
+            return orders.stream()
+                    .flatMap(item -> item.items.stream())
+                    .distinct()
+                    .filter(item -> item.startsWith("c"))
+                    .map(String::toUpperCase)
                     .toList();
         }
     }
