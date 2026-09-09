@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalDouble;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -491,6 +492,21 @@ public class JStream {
         final Function<Integer, Integer> tripleThenAdd = addOne.compose(tripleIt);
         public int tripleThenAdd(Integer integer) {
             return tripleThenAdd.apply(integer);
+        }
+    }
+    static class JConsumer {
+        // It is certainly not the most efficient way to print something.
+        Consumer<String> coolerPrint = System.out::println;
+        public void coolerPrint(String string) {
+            coolerPrint.accept(string);
+        }
+
+        Consumer<String> first = s -> System.out.println("First: " + s);
+        Consumer<String> second = s -> System.out.println("Second: " + s);
+
+        Consumer<String> combined = first.andThen(second);
+        public void combinedPrint(String string) {
+            combined.accept(string);
         }
     }
 
