@@ -1,10 +1,10 @@
-package com.javacs.streams;
+package com.javacs.projects.pipeline;
 
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public class MyPipeline<T> implements Pipeline<T>{
+public class MyPipeline<T> implements Pipeline<T> {
 
     private final List<T> elements;
 

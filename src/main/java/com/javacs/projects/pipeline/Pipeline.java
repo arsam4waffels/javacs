@@ -1,4 +1,4 @@
-package com.javacs.streams;
+package com.javacs.projects.pipeline;
 
 import java.util.List;
 import java.util.function.Function;
