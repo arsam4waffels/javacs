@@ -1,10 +1,13 @@
 package com.javacs.streams;
 
+import jdk.dynalink.linker.ConversionComparator;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalDouble;
 
 public class JStream {
 
@@ -386,6 +389,46 @@ public class JStream {
                             .comparing(User::age)
                             .reversed())
                     .toList();
+        }
+    }
+    static class Final {
+        record Product(
+                String name,
+                String category,
+                double price
+        ) {}
+        final List<Product> products = List.of(
+                new Product("Laptop", "Electronics", 1200),
+                new Product("Mouse", "Electronics", 40),
+                new Product("Keyboard", "Electronics", 80),
+                new Product("Chair", "Furniture", 300),
+                new Product("Desk", "Furniture", 500),
+                new Product("Monitor", "Electronics", 400),
+                new Product("Lamp", "Furniture", 60)
+        );
+        public List<String> electronicsName() {
+            return products.stream()
+                    .filter(item -> item.category().equals("Electronics"))
+                    .map(Product::name)
+                    .map(String::toUpperCase)
+                    .toList();
+        }
+        public List<Double> electronicsPrice() {
+            return products.stream()
+                    .filter(item -> item.category().equals("Electronics"))
+                    .map(Product::price)
+                    .toList();
+        }
+        public OptionalDouble electronicsAveragePrice() {
+            return products.stream()
+                    .filter(item -> item.category.equals("Electronics"))
+                    .mapToDouble(Product::price)
+                    .average();
+        }
+        public Product highestPrice() {
+            return products.stream()
+                    .max(Comparator.comparing(Product::price))
+                    .orElseThrow();
         }
     }
 }
