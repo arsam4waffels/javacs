@@ -16,12 +16,15 @@ public interface Pipeline<T> {
 
     /**
      * <b>Filter</b>
-     * <p>evaluates an input and returns a boolean result.</p>
+     * <p>Filters elements based on the given predicate.</p>
      *
-     * <p>{@code Pipeline<T>} is also returned, ensuring that the
-     * filtered value is passed back into the pipeline and
-     * allowing methods to be chained together.</p>
-     * @param predicate
+     * <p>The predicate evaluates each element and returns either
+     * {@code true} or {@code false}.</p>
+     *
+     * <p>Returns {@code Pipeline<T>} so that operations can be chained.</p>
+     *
+     * @param predicate the condition used to filter elements
+     * @return the current pipeline
      */
     Pipeline<T> filter(Predicate<T> predicate);
 
