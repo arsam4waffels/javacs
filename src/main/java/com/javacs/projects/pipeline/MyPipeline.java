@@ -8,7 +8,7 @@ public class MyPipeline<T> implements Pipeline<T> {
 
     private final List<T> elements;
 
-    public MyPipeline(List<T> elements) {
+    private MyPipeline(List<T> elements) {
         this.elements = elements;
     }
 

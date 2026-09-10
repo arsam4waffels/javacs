@@ -78,4 +78,11 @@ public class JReference {
     Map<String, Integer> map = new HashMap<>();
     Function<String, Integer> getter = map::get;
     BiConsumer<String, Integer> putter = map::put;
+    record User(
+            String name,
+            int age,
+            String email,
+            boolean active,
+            List<String> interests
+    ) {}
 }
