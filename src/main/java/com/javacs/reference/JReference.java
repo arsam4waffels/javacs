@@ -85,4 +85,9 @@ public class JReference {
             boolean active,
             List<String> interests
     ) {}
+    public List<User> activeUsers(List<User> userList) {
+        return userList.stream()
+                .filter(User::active)
+                .toList();
+    }
 }
