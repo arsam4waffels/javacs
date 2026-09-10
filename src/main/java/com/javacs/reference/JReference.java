@@ -11,6 +11,7 @@ import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -90,4 +91,16 @@ public class JReference {
                 .filter(User::active)
                 .toList();
     }
+    public List<User> filterByAge(
+            List<User> userList,
+            int minAge,
+            int maxAge) {
+        Predicate<User> ageRange = user ->
+                user.age() >= minAge && user.age <= maxAge;
+        return userList.stream()
+                .filter(ageRange)
+                .toList();
+
+    }
+
 }
