@@ -11,7 +11,9 @@ import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -78,4 +80,54 @@ public class JReference {
     Map<String, Integer> map = new HashMap<>();
     Function<String, Integer> getter = map::get;
     BiConsumer<String, Integer> putter = map::put;
+    record User(
+            String name,
+            int age,
+            String email,
+            boolean active,
+            List<String> interests
+    ) {}
+    public List<User> activeUsers(List<User> userList) {
+        return userList.stream()
+                .filter(User::active)
+                .toList();
+    }
+    public List<User> filterByAge(
+            List<User> userList,
+            int minAge,
+            int maxAge) {
+        Predicate<User> ageRange = user ->
+                user.age() >= minAge && user.age <= maxAge;
+        return userList.stream()
+                .filter(ageRange)
+                .toList();
+
+    }
+    public List<User> sortByAge(List<User> userList) {
+        return userList.stream()
+                .sorted(Comparator.comparing(User::age))
+                .toList();
+    }
+    public List<User> sortUsersByNameDescending(List<User> users) {
+        return users.stream()
+                .sorted(Comparator.comparing(User::name).reversed())
+                .toList();
+    }
+    public Map<String, List<User>> groupByAgeCategory(List<User> users) {
+        Function<User, String> ageCategory = user -> {
+            if (user.age() < 18) return "Teen";
+            else if (user.age() < 30) return "Young Adult";
+            else if (user.age() < 50) return "Adult";
+            else return "Senior";
+        };
+        return users.stream()
+                .collect(Collectors.groupingBy(ageCategory));
+    }
+    public double calculateAverageAge(List<User> users) {
+        return users.stream()
+                .collect(Collectors.averagingInt(User::age));
+    }
+    public static final Function<User, String> TO_EMAIL_DOMAIN =
+            user -> user.email().split("@")[1];
+
 }
