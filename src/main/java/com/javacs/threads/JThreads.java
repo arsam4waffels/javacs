@@ -1,5 +1,7 @@
 package com.javacs.threads;
 
+import java.util.Arrays;
+
 public class JThreads {
     /*
      * parallelization  : Executing multiple threads in parallel.
@@ -20,6 +22,7 @@ public class JThreads {
      *      [4] fair resource allocation
      *
      * == Thread State ==
+     *      [0] getState()      : STATE
      *      [1] NEW             => built, but not yet executed
      *      [2] RUNNABLE        => threads start != executing on cpu rn
      *      [3] BLOCKED         => locked by 'synchronized'; wating for 'monitor-lock'
@@ -75,6 +78,25 @@ public class JThreads {
      *  │
      *  └── Thread A --> Thread B
      */
+
+    public void thread_1() {
+        final int SIZE = 5;
+        int[] array = new int[SIZE];
+        Thread thread = new Thread(() -> {
+            for (int i = 0; i < SIZE; i++) {
+                array[i] = i;
+            }
+        });
+        thread.start();
+        for (int i = 0; i < SIZE; i++) {
+            array[i] = i + 1;
+        }
+        System.out.println(Arrays.toString(array));
+    }
+
+    public String getThreadName(Thread thread) {
+        return Thread.currentThread().getName();
+    }
 
     // volatile : It can help make the changes visible
     private volatile int progress;
