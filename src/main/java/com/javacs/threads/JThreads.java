@@ -1,6 +1,7 @@
 package com.javacs.threads;
 
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class JThreads {
     /*
@@ -94,10 +95,91 @@ public class JThreads {
         System.out.println(Arrays.toString(array));
     }
 
-    public String getThreadName(Thread thread) {
+    public String getThreadName() {
         return Thread.currentThread().getName();
     }
 
+    public void matryoshka() {
+        AtomicInteger counter = new AtomicInteger();
+        Thread superThread = new Thread(() -> {
+            Thread supThread_1 = new Thread(
+                    counter::getAndIncrement
+            );
+            Thread supThread_2 = new Thread(
+                    counter::getAndIncrement
+            );
+            Thread supThread_3 = new Thread(
+                    counter::getAndIncrement
+            );
+
+            supThread_1.start();
+            supThread_2.start();
+            supThread_3.start();
+        });
+        superThread.start();
+    }
+
+    /*
+     *       RUNNABLE
+     *          │ sleep()
+     *          ▼
+     *     TIMED_WAITING
+     *          │ timeout
+     *          ▼
+     *       RUNNABLE
+     */
+    public void threadSleeper(long goodnight) throws InterruptedException {
+        Thread thread = new Thread(() -> {
+            System.out.println(
+                    Thread.currentThread().getName()
+            );
+        });
+        // ALWAYS STOPS THE CURRENT THREAD
+        Thread.sleep(goodnight * 1000);
+    }
+    /*
+     * main
+     *  │
+     *  ├── worker.start()
+     *  │
+     *  │        worker
+     *  │          │
+     *  │          ▼
+     *  │       started
+     *  │          │
+     *  │       sleep 2s
+     *  │          │
+     *  │       finished
+     *  │
+     *  ├── worker.join()
+     *  │       ↑
+     *  │       │
+     *  │     worker
+     *  │
+     *  ▼
+     * Main finished
+     */
+    public void threadJoin() throws InterruptedException {
+        Thread worker = new Thread(() -> {
+
+            System.out.println("Worker started");
+
+            try {
+                Thread.sleep(2000);
+            }
+            catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+
+            System.out.println("Worker finished");
+        });
+
+        worker.start();
+
+        worker.join();
+
+        System.out.println("Main finished");
+    }
     // volatile : It can help make the changes visible
     private volatile int progress;
 }
