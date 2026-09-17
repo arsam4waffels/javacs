@@ -6,6 +6,6 @@ import com.javacs.threads.JThreads;
 public class Main {
     public static void main(String[] args) {
         JThreads jThreads = new JThreads();
-        jThreads.thread_1();
+        jThreads.raceConditionThread();
     }
 }
