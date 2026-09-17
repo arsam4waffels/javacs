@@ -134,6 +134,7 @@ public class JThreads {
                     Thread.currentThread().getName()
             );
         });
+        thread.start();
         // ALWAYS STOPS THE CURRENT THREAD
         Thread.sleep(goodnight * 1000);
     }
@@ -166,8 +167,9 @@ public class JThreads {
 
             try {
                 Thread.sleep(2000);
-            }
+            } // If an error occurs for the current thread
             catch (InterruptedException e) {
+                // Stop the current thread (the thread is still alive and holds vital information)
                 Thread.currentThread().interrupt();
             }
 
@@ -182,4 +184,28 @@ public class JThreads {
     }
     // volatile : It can help make the changes visible
     private volatile int progress;
+
+    public void downloadFileThread() {
+        Thread downloadFile = new Thread(() -> {
+            System.out.println("Downloading...");
+        });
+        downloadFile.start();
+        try {
+            downloadFile.join();
+            saveFileThread();
+        }
+        catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+    public void saveFileThread() {
+        /*
+         * If we are on the download thread and its task is complete (it is no longer active),
+         * execute the file-saving thread.
+         */
+        Thread saveFile = new Thread(() -> {
+            System.out.println("Where you wanna save you file?");
+        });
+        saveFile.start();
+    }
 }
