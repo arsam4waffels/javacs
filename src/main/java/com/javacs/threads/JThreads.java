@@ -80,18 +80,30 @@ public class JThreads {
      *  └── Thread A --> Thread B
      */
 
-    public void thread_1() {
+    /**
+     * <b>The code that has been written is fragile.</b>
+     * <p>Two separate threads — the main one and the one we created — are
+     * attempting to modify shared data.</p>
+     * <p>The outcome can be unpredictable and indistinguishable.</p>
+     */
+    public void raceConditionThread() {
         final int SIZE = 5;
+
+        // A public array of integers
         int[] array = new int[SIZE];
+
         Thread thread = new Thread(() -> {
             for (int i = 0; i < SIZE; i++) {
                 array[i] = i;
             }
         });
+
         thread.start();
+
         for (int i = 0; i < SIZE; i++) {
             array[i] = i + 1;
         }
+
         System.out.println(Arrays.toString(array));
     }
 
@@ -100,8 +112,11 @@ public class JThreads {
     }
 
     public void matryoshka() {
+
         AtomicInteger counter = new AtomicInteger();
+
         Thread superThread = new Thread(() -> {
+
             Thread supThread_1 = new Thread(
                     counter::getAndIncrement
             );
@@ -117,6 +132,12 @@ public class JThreads {
             supThread_3.start();
         });
         superThread.start();
+        try {
+            superThread.join();
+        }
+        catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 
     /*
@@ -134,6 +155,7 @@ public class JThreads {
                     Thread.currentThread().getName()
             );
         });
+        thread.start();
         // ALWAYS STOPS THE CURRENT THREAD
         Thread.sleep(goodnight * 1000);
     }
@@ -166,8 +188,9 @@ public class JThreads {
 
             try {
                 Thread.sleep(2000);
-            }
+            } // If an error occurs for the current thread
             catch (InterruptedException e) {
+                // Stop the current thread (the thread is still alive and holds vital information)
                 Thread.currentThread().interrupt();
             }
 
@@ -182,4 +205,28 @@ public class JThreads {
     }
     // volatile : It can help make the changes visible
     private volatile int progress;
+
+    public void downloadFileThread() {
+        Thread downloadFile = new Thread(() -> {
+            System.out.println("Downloading...");
+        });
+        downloadFile.start();
+        try {
+            downloadFile.join();
+            saveFileThread();
+        }
+        catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+    public void saveFileThread() {
+        /*
+         * If we are on the download thread and its task is complete (it is no longer active),
+         * execute the file-saving thread.
+         */
+        Thread saveFile = new Thread(() -> {
+            System.out.println("Where you wanna save you file?");
+        });
+        saveFile.start();
+    }
 }
