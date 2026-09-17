@@ -1,5 +1,6 @@
 package com.javacs.threads;
 
+import java.io.ObjectStreamException;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -228,5 +229,44 @@ public class JThreads {
             System.out.println("Where you wanna save you file?");
         });
         saveFile.start();
+    }
+
+    static class Deadlock {
+
+        final Object porta = new Object();
+        final Object cup = new Object();
+
+        void coffeeShop() {
+            Thread arsam = new Thread(() -> {
+                synchronized (porta) {
+                    System.out.println("Got the portafilter.");
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                }
+                synchronized (cup) {
+                    System.out.println("Coffee is ready.");
+                }
+            });
+
+            Thread rick = new Thread(() -> {
+                synchronized (cup) {
+                    System.out.println("Got the cup.");
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                }
+                synchronized (porta) {
+                    System.out.println("Coffee is ready.");
+                }
+            });
+
+            arsam.start();
+            rick.start();
+        }
     }
 }
