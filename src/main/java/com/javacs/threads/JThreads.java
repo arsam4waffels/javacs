@@ -269,4 +269,62 @@ public class JThreads {
             rick.start();
         }
     }
+
+    /**
+     * join()   -> It becomes active whenever the current thread finishes
+     * wait()   -> It needs to be manually triggered to activate, subject to the aforementioned condition
+     */
+
+    static class Kitchen {
+
+        private boolean isFoodReady = false;
+
+        public synchronized void waiter() throws InterruptedException {
+            System.out.println("waiting for food...");
+            while (!isFoodReady()) {
+                wait();
+            }
+            System.out.println("serving the food.");
+        }
+
+        public synchronized void chief() {
+
+            try {
+                Thread.sleep(5000);
+                System.out.println("cooking food...");
+            } catch (InterruptedException _) {
+                Thread.currentThread().interrupt();
+            }
+            setFoodReady(true);
+            System.out.println("food ready!");
+
+            notify();
+        }
+
+        public boolean isFoodReady() {
+            return isFoodReady;
+        }
+
+        public void setFoodReady(boolean foodStatus) {
+            isFoodReady = foodStatus;
+        }
+
+        Kitchen kitchen = new Kitchen();
+
+        public void startKitchen() {
+            Thread waiterThread = new Thread(() -> {
+                try {
+                    kitchen.waiter();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            });
+            Thread chiefThread = new Thread(() -> {
+                kitchen.chief();
+            });
+
+            waiterThread.start();
+            chiefThread.start();
+        }
+    }
 }
