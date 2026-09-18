@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
@@ -562,7 +563,25 @@ public class JThreads {
         }
     }
 
+    // little buddy is doing all the work
     public void doWork() {
         System.out.println("working...");
+    }
+
+    /*
+     * ReentrantLock  : is like a door; it's either open or closed.
+     * Semaphore      : is like a parking lot; it has a certain number of available spots.
+     */
+    public void parking() throws InterruptedException {
+        final int CAPACITY = 5;
+
+        // initializing parking space
+        Semaphore semaphore = new Semaphore(CAPACITY);
+
+        // getting a space
+        semaphore.acquire(); // <- free space count : 4 (5 - 1)
+
+        // freeing a space
+        semaphore.release(); // <- free space count : 5
     }
 }
