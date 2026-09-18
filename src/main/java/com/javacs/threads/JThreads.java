@@ -341,4 +341,45 @@ public class JThreads {
             throw new RuntimeException(e);
         }
     }
+
+    /*
+     * Each thread has a local cache of variables.
+     *
+     * Main Memory:  flag = true
+     *      ↓
+     * Thread 1:  cache: flag = true
+     * Thread 2:  cache: flag = false (data has not yet been updated)
+     *
+     * [volatile]   -> It reads directly from the main memory every time.
+     */
+    static class Worker {
+
+        protected boolean wrongRunning = true;
+        protected volatile boolean correctRunning = true;
+
+        public void doingWork() {
+            /*
+             * A lambda can only use variables that are:
+             *      [1] final
+             *      [2] effectively final (unchanged)
+             */
+            Thread thread = new Thread(() -> {
+                while (correctRunning)
+                    System.out.println("Working...");
+            });
+
+            thread.start();
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            // Error : Variable used in lambda expression should be final or effectively final
+            wrongRunning = false;
+
+            correctRunning = false;
+        }
+    }
+
+
 }
