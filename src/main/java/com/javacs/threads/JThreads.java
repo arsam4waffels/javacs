@@ -383,5 +383,35 @@ public class JThreads {
         }
     }
 
+    static class Atomic {
+        // still facing problem
+        volatile int count = 0;
+
+        public void atomsInThread() {
+            // race condition
+            int count = 0;
+            count++;
+
+            // fully thread-safe
+            AtomicInteger atomicInteger = new AtomicInteger(0);
+            atomicInteger.incrementAndGet();
+
+            atomicInteger.get();                // Give the current value
+            atomicInteger.set(10);              // Set the value.
+            atomicInteger.incrementAndGet();    // First increment, then return → ++count
+            atomicInteger.getAndIncrement();    // Give first, then +1 → count++
+            atomicInteger.decrementAndGet();    // First deduct 1, then give.
+            atomicInteger.addAndGet(5);   // Add x [5] and hand it over.
+
+            /*
+             * AtomicInteger    => int
+             * AtomicLong       => long
+             * AtomicBoolean    => boolean
+             * AtomicReference  => any object
+             */
+        }
+    }
+
+
 
 }
