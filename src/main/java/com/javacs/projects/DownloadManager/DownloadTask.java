@@ -1,5 +1,6 @@
 package com.javacs.projects.DownloadManager;
 
+import java.nio.charset.IllegalCharsetNameException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class DownloadTask {
@@ -11,6 +12,9 @@ public class DownloadTask {
             new AtomicInteger(0);
 
     public DownloadTask(String fileName) {
+        if (fileName == null || fileName.isEmpty())
+            throw new RuntimeException();
+
         this.fileName = fileName;
     }
 
@@ -32,7 +36,7 @@ public class DownloadTask {
                     Thread.currentThread().interrupt();
                 }
 
-                if (downloadPercentage.get() >= 100) {
+                if (downloadPercentage.get() > 100) {
                     isDownloadComplete = true;
                     return;
                 }

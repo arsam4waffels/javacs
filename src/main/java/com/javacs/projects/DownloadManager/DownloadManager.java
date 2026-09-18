@@ -21,7 +21,9 @@ public class DownloadManager {
     public void runnable() {
 
         try (ExecutorService executorService =
-                     Executors.newFixedThreadPool(3)) {
+                     Executors.newFixedThreadPool(
+                             downloadTaskList.size()
+                     )) {
 
             List<Future<?>> futures = new ArrayList<>();
 
