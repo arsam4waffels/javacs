@@ -1,10 +1,14 @@
 package com.javacs.threads;
 
 import java.util.Arrays;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class JThreads {
     /*
@@ -272,6 +276,64 @@ public class JThreads {
         }
     }
 
+    // fixing the Deadlock class with ReentrantLock
+    static class FixDeadLock {
+
+        final Object porta = new Object();
+        final Object cup = new Object();
+        final ReentrantLock lock = new ReentrantLock(true);
+
+        void coffeeShop() {
+
+            Thread arsam = new Thread(() -> {
+                try {
+                    if (lock.tryLock(2, TimeUnit.SECONDS)) {
+                        try {
+                            synchronized (porta) {
+                                System.out.println("Got portafilter");
+                                Thread.sleep(100);
+                            }
+                            synchronized (cup) {
+                                System.out.println("Coffee ready");
+                            }
+                        } finally {
+                            lock.unlock();
+                        }
+                    } else {
+                        System.out.println("I'll get it next time");
+                    }
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            });
+
+            Thread rick = new Thread(() -> {
+                try {
+                    if (lock.tryLock(2, TimeUnit.SECONDS)) {
+                        try {
+                            synchronized (porta) {
+                                System.out.println("Got portafilter");
+                                Thread.sleep(100);
+                            }
+                            synchronized (cup) {
+                                System.out.println("Coffee ready");
+                            }
+                        } finally {
+                            lock.unlock();
+                        }
+                    } else {
+                        System.out.println("I'll get it next time");
+                    }
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            });
+
+            arsam.start();
+            rick.start();
+        }
+    }
+
     /**
      * join()   -> It becomes active whenever the current thread finishes
      * wait()   -> It needs to be manually triggered to activate, subject to the aforementioned condition
@@ -412,6 +474,176 @@ public class JThreads {
         }
     }
 
+    /*
+     * problem with synchronized is that if we stuck in a junk of code,
+     * there is no way for saving it, no cancel, no time out
+     */
+    public void reentrantLockThread() {
+        ReentrantLock reentrantLock = new ReentrantLock(true);
+        reentrantLock.lock(); // <- first lock (lock count = 1)
+        try {
+            // will wait a period of time before taking and action
+            if (reentrantLock.tryLock(2, TimeUnit.SECONDS)) { // <- second lock (lock count = 2)
+                try {
+                    int absValue;
+                    // check if the lock is open
+                    if (reentrantLock.isLocked())
+                        // It throws an exception if interrupted
+                        reentrantLock.lockInterruptibly(); // <- third lock (lock count = 3)
+                    absValue = Math.abs(8);
+                } finally {
+                    // whatever happens, open the lock
+                    for (int i = 0; i <= 3; i++)
+                        reentrantLock.unlock();
+                }
+                /*
+                 * The locks stack up; to unlock the thread, you must issue
+                 * the same number of release commands.
+                 */
+            }
+            else System.out.println("[Locked after {2} second]");
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException(e);
+        }
+    }
 
+    private final ReentrantLock reentrantLock = new ReentrantLock();
 
+    // simple lock
+    public void simpleLockThread() {
+        reentrantLock.lock();
+        try {
+            doWork();
+        } finally {
+            reentrantLock.unlock();
+        }
+    }
+
+    // try, if lock -> leave it
+    public void tryLockThread() {
+        if (reentrantLock.tryLock()) {
+            try {
+                doWork();
+            } finally {
+                reentrantLock.unlock();
+            }
+        }
+        else {
+            System.out.println(
+                    "It's locked"
+            );
+        }
+    }
+
+    // try, if locked, wait x time, if lock -> leave it
+    public void tryLockTimeoutThread() throws InterruptedException {
+        if (reentrantLock.tryLock(
+                5, TimeUnit.SECONDS
+        )) {
+            try {
+                doWork();
+            } finally {
+                reentrantLock.unlock();
+            }
+        }
+        else {
+            System.out.println(
+                    "waited 5 second and It's still locked"
+            );
+        }
+    }
+
+    // leave it if thread got interrupted
+    public void interruptLockThread() throws InterruptedException {
+        reentrantLock.lockInterruptibly();
+        try {
+            doWork();
+        } finally {
+            reentrantLock.unlock();
+        }
+    }
+
+    // little buddy is doing all the work
+    public void doWork() {
+        System.out.println("working...");
+    }
+
+    /*
+     * ReentrantLock  : is like a door; it's either open or closed.
+     * Semaphore      : is like a parking lot; it has a certain number of available spots.
+     */
+    public void parking() throws InterruptedException {
+        final int CAPACITY = 5;
+
+        // initializing parking space
+        Semaphore semaphore = new Semaphore(CAPACITY);
+
+        // getting a space
+        semaphore.acquire(); // <- free space count : 4 (5 - 1)
+
+        // freeing a space
+        semaphore.release(); // <- free space count : 5
+    }
+
+    static class Server {
+
+        boolean isDone = false;
+        final int CAPACITY = 5;
+        private final Semaphore semaphore = new Semaphore(CAPACITY);
+
+        public void handleRequest(String user) {
+            try {
+                semaphore.acquire(); // <- minus one free space
+                try {
+                    System.out.println(user + " connected.");
+                    Thread.sleep(2000);
+                    isDone = true;
+                    System.out.println(user + " disconnected.");
+                }
+                finally {
+                    if (isDone) semaphore.release();
+                    else handleRequest(user);
+                }
+            }
+            catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    /*
+     * CountDownLatch   -> Each thread decrements the count by one.
+     *                  -> When it reaches 0 → they are all released.
+     *
+     * latch.countDown();                   : minus the counter by one
+     * latch.await();                       : wait till counter be zero
+     * latch.await(5, TimeUnit.SECONDS);    : wait a maximum of 5 seconds
+     * latch.getCount();                    : how many are left now?
+     */
+    public void countDownThread() {
+        CountDownLatch countDownLatch = new CountDownLatch(3);
+        Thread thread_1 = new Thread(() -> {
+            doWork();
+            countDownLatch.countDown();
+        });
+        Thread thread_2 = new Thread(() -> {
+            doWork();
+            countDownLatch.countDown();
+        });
+        Thread thread_3 = new Thread(() -> {
+            doWork();
+            countDownLatch.countDown();
+        });
+
+        try {
+            thread_1.start();
+            thread_2.start();
+            thread_3.start();
+            countDownLatch.await();
+        }
+        catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
