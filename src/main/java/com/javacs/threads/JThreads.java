@@ -1,6 +1,7 @@
 package com.javacs.threads;
 
 import java.util.Arrays;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -608,6 +609,41 @@ public class JThreads {
             catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
+        }
+    }
+
+    /*
+     * CountDownLatch   -> Each thread decrements the count by one.
+     *                  -> When it reaches 0 → they are all released.
+     *
+     * latch.countDown();                   : minus the counter by one
+     * latch.await();                       : wait till counter be zero
+     * latch.await(5, TimeUnit.SECONDS);    : wait a maximum of 5 seconds
+     * latch.getCount();                    : how many are left now?
+     */
+    public void countDownThread() {
+        CountDownLatch countDownLatch = new CountDownLatch(3);
+        Thread thread_1 = new Thread(() -> {
+            doWork();
+            countDownLatch.countDown();
+        });
+        Thread thread_2 = new Thread(() -> {
+            doWork();
+            countDownLatch.countDown();
+        });
+        Thread thread_3 = new Thread(() -> {
+            doWork();
+            countDownLatch.countDown();
+        });
+
+        try {
+            thread_1.start();
+            thread_2.start();
+            thread_3.start();
+            countDownLatch.await();
+        }
+        catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 }
