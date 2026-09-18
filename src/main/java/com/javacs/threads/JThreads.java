@@ -1,6 +1,9 @@
 package com.javacs.threads;
 
 import java.util.Arrays;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class JThreads {
@@ -229,4 +232,186 @@ public class JThreads {
         });
         saveFile.start();
     }
+
+    static class Deadlock {
+
+        final Object porta = new Object();
+        final Object cup = new Object();
+
+        void coffeeShop() {
+            Thread arsam = new Thread(() -> {
+                synchronized (porta) {
+                    System.out.println("Got the portafilter.");
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                }
+                synchronized (cup) {
+                    System.out.println("Coffee is ready.");
+                }
+            });
+
+            Thread rick = new Thread(() -> {
+                synchronized (cup) {
+                    System.out.println("Got the cup.");
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                }
+                synchronized (porta) {
+                    System.out.println("Coffee is ready.");
+                }
+            });
+
+            arsam.start();
+            rick.start();
+        }
+    }
+
+    /**
+     * join()   -> It becomes active whenever the current thread finishes
+     * wait()   -> It needs to be manually triggered to activate, subject to the aforementioned condition
+     */
+
+    static class Kitchen {
+
+        private boolean isFoodReady = false;
+
+        public synchronized void waiter() throws InterruptedException {
+            System.out.println("waiting for food...");
+            while (!isFoodReady()) {
+                wait();
+            }
+            System.out.println("serving the food.");
+        }
+
+        public synchronized void chief() {
+
+            try {
+                Thread.sleep(5000);
+                System.out.println("cooking food...");
+            } catch (InterruptedException _) {
+                Thread.currentThread().interrupt();
+            }
+            setFoodReady(true);
+            System.out.println("food ready!");
+
+            notify();
+        }
+
+        public boolean isFoodReady() {
+            return isFoodReady;
+        }
+
+        public void setFoodReady(boolean foodStatus) {
+            isFoodReady = foodStatus;
+        }
+
+        Kitchen kitchen = new Kitchen();
+
+        public void startKitchen() {
+            Thread waiterThread = new Thread(() -> {
+                try {
+                    kitchen.waiter();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            });
+            Thread chiefThread = new Thread(() -> {
+                kitchen.chief();
+            });
+
+            waiterThread.start();
+            chiefThread.start();
+        }
+    }
+
+    public void executorServiceThread() {
+        try (ExecutorService executor =
+                     Executors.newFixedThreadPool(3)
+        ) {
+            // Future<?> video    = executor.submit(() -> downloadVideo());
+            // Future<?> audio    = executor.submit(() -> downloadAudio());
+            // Future<?> subtitle = executor.submit(() -> downloadSubtitle());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /*
+     * Each thread has a local cache of variables.
+     *
+     * Main Memory:  flag = true
+     *      ↓
+     * Thread 1:  cache: flag = true
+     * Thread 2:  cache: flag = false (data has not yet been updated)
+     *
+     * [volatile] -> It reads directly from the main memory every time.
+     *     ↓
+     * Always read this variable from main memory, not the cache.
+     */
+    static class Worker {
+
+        protected boolean wrongRunning = true;
+        protected volatile boolean correctRunning = true;
+
+        public void doingWork() {
+            /*
+             * A lambda can only use variables that are:
+             *      [1] final
+             *      [2] effectively final (unchanged)
+             */
+            Thread thread = new Thread(() -> {
+                while (correctRunning)
+                    System.out.println("Working...");
+            });
+
+            thread.start();
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            // Error : Variable used in lambda expression should be final or effectively final
+            wrongRunning = false;
+
+            correctRunning = false;
+        }
+    }
+
+    static class Atomic {
+        // still facing problem
+        volatile int count = 0;
+
+        public void atomsInThread() {
+            // race condition
+            int count = 0;
+            count++;
+
+            // fully thread-safe
+            AtomicInteger atomicInteger = new AtomicInteger(0);
+            atomicInteger.incrementAndGet();
+
+            atomicInteger.get();                // Give the current value
+            atomicInteger.set(10);              // Set the value.
+            atomicInteger.incrementAndGet();    // First increment, then return → ++count
+            atomicInteger.getAndIncrement();    // Give first, then +1 → count++
+            atomicInteger.decrementAndGet();    // First deduct 1, then give.
+            atomicInteger.addAndGet(5);   // Add x [5] and hand it over.
+
+            /*
+             * AtomicInteger    => int
+             * AtomicLong       => long
+             * AtomicBoolean    => boolean
+             * AtomicReference  => any object
+             */
+        }
+    }
+
+
+
 }
