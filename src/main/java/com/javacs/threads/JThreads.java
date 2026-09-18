@@ -274,6 +274,64 @@ public class JThreads {
         }
     }
 
+    // fixing the Deadlock class with ReentrantLock
+    static class FixDeadLock {
+
+        final Object porta = new Object();
+        final Object cup = new Object();
+        final ReentrantLock lock = new ReentrantLock(true);
+
+        void coffeeShop() {
+
+            Thread arsam = new Thread(() -> {
+                try {
+                    if (lock.tryLock(2, TimeUnit.SECONDS)) {
+                        try {
+                            synchronized (porta) {
+                                System.out.println("Got portafilter");
+                                Thread.sleep(100);
+                            }
+                            synchronized (cup) {
+                                System.out.println("Coffee ready");
+                            }
+                        } finally {
+                            lock.unlock();
+                        }
+                    } else {
+                        System.out.println("I'll get it next time");
+                    }
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            });
+
+            Thread rick = new Thread(() -> {
+                try {
+                    if (lock.tryLock(2, TimeUnit.SECONDS)) {
+                        try {
+                            synchronized (porta) {
+                                System.out.println("Got portafilter");
+                                Thread.sleep(100);
+                            }
+                            synchronized (cup) {
+                                System.out.println("Coffee ready");
+                            }
+                        } finally {
+                            lock.unlock();
+                        }
+                    } else {
+                        System.out.println("I'll get it next time");
+                    }
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            });
+
+            arsam.start();
+            rick.start();
+        }
+    }
+
     /**
      * join()   -> It becomes active whenever the current thread finishes
      * wait()   -> It needs to be manually triggered to activate, subject to the aforementioned condition
