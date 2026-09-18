@@ -447,4 +447,64 @@ public class JThreads {
             throw new RuntimeException(e);
         }
     }
+
+    private final ReentrantLock reentrantLock = new ReentrantLock();
+
+    // simple lock
+    public void simpleLockThread() {
+        reentrantLock.lock();
+        try {
+            doWork();
+        } finally {
+            reentrantLock.unlock();
+        }
+    }
+
+    // try, if lock -> leave it
+    public void tryLockThread() {
+        if (reentrantLock.tryLock()) {
+            try {
+                doWork();
+            } finally {
+                reentrantLock.unlock();
+            }
+        }
+        else {
+            System.out.println(
+                    "It's locked"
+            );
+        }
+    }
+
+    // try, if locked, wait x time, if lock -> leave it
+    public void tryLockTimeoutThread() throws InterruptedException {
+        if (reentrantLock.tryLock(
+                5, TimeUnit.SECONDS
+        )) {
+            try {
+                doWork();
+            } finally {
+                reentrantLock.unlock();
+            }
+        }
+        else {
+            System.out.println(
+                    "waited 5 second and It's still locked"
+            );
+        }
+    }
+
+    // leave it if thread got interrupted
+    public void interruptLockThread() throws InterruptedException {
+        reentrantLock.lockInterruptibly();
+        try {
+            doWork();
+        } finally {
+            reentrantLock.unlock();
+        }
+    }
+
+    public void doWork() {
+        System.out.println("working...");
+    }
 }
