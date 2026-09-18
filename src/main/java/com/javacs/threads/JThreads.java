@@ -350,7 +350,9 @@ public class JThreads {
      * Thread 1:  cache: flag = true
      * Thread 2:  cache: flag = false (data has not yet been updated)
      *
-     * [volatile]   -> It reads directly from the main memory every time.
+     * [volatile] -> It reads directly from the main memory every time.
+     *     ↓
+     * Always read this variable from main memory, not the cache.
      */
     static class Worker {
 
