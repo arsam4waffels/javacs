@@ -4,7 +4,9 @@ import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class JThreads {
     /*
@@ -412,6 +414,37 @@ public class JThreads {
         }
     }
 
-
-
+    /*
+     * problem with synchronized is that if we stuck in a junk of code,
+     * there is no way for saving it, no cancel, no time out
+     */
+    public void reentrantLockThread() {
+        ReentrantLock reentrantLock = new ReentrantLock(true);
+        reentrantLock.lock(); // <- first lock (lock count = 1)
+        try {
+            // will wait a period of time before taking and action
+            if (reentrantLock.tryLock(2, TimeUnit.SECONDS)) { // <- second lock (lock count = 2)
+                try {
+                    int absValue;
+                    // check if the lock is open
+                    if (reentrantLock.isLocked())
+                        // It throws an exception if interrupted
+                        reentrantLock.lockInterruptibly(); // <- third lock (lock count = 3)
+                    absValue = Math.abs(8);
+                } finally {
+                    // whatever happens, open the lock
+                    for (int i = 0; i <= 3; i++)
+                        reentrantLock.unlock();
+                }
+                /*
+                 * The locks stack up; to unlock the thread, you must issue
+                 * the same number of release commands.
+                 */
+            }
+            else System.out.println("[Locked after {2} second]");
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException(e);
+        }
+    }
 }
