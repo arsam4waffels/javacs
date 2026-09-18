@@ -584,4 +584,30 @@ public class JThreads {
         // freeing a space
         semaphore.release(); // <- free space count : 5
     }
+
+    static class Server {
+
+        boolean isDone = false;
+        final int CAPACITY = 5;
+        private final Semaphore semaphore = new Semaphore(CAPACITY);
+
+        public void handleRequest(String user) {
+            try {
+                semaphore.acquire(); // <- minus one free space
+                try {
+                    System.out.println(user + " connected.");
+                    Thread.sleep(2000);
+                    isDone = true;
+                    System.out.println(user + " disconnected.");
+                }
+                finally {
+                    if (isDone) semaphore.release();
+                    else handleRequest(user);
+                }
+            }
+            catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 }
