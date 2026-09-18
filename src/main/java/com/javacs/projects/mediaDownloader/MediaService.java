@@ -1,4 +1,4 @@
-package com.javacs.projects.DownloadManagerPro;
+package com.javacs.projects.mediaDownloader;
 
 import java.util.List;
 

@@ -1,10 +1,11 @@
-package com.javacs.projects.DownloadManagerPro;
+package com.javacs.projects.mediaDownloader;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class MediaDownloader {
@@ -38,10 +39,12 @@ public class MediaDownloader {
     }
 
     public void calculateDistribution(String[] list) {
-        int size = fileNames.length;
-        int forEachThread = (int) Math.ceil((double)size / 3);
+        /*
+         * int size = fileNames.length;
+         * int forEachThread = (int) Math.ceil((double)size / 3);
+         */
         for (int i = 0; i < list.length; i++) {
-            switch ((int) i % 3) {
+            switch (i % 3) {
                 case 0 -> downloadPipeline1(i);
                 case 1 -> downloadPipeline2(i);
                 case 2 -> downloadPipeline3(i);
@@ -67,18 +70,18 @@ public class MediaDownloader {
     public void downloadFile(int index) {
         Thread downloadPipeline = new Thread(() ->  {
             AtomicInteger downloadPercentage = new AtomicInteger(0);
-            boolean[] isComplete = {false};
+            AtomicBoolean isComplete = new AtomicBoolean(false);
             try {
                 semaphore.acquire();
                 try {
-                    while (!isComplete[0]) {
+                    while (!isComplete.get()) {
                         System.out.println(fileNames[index]
                                 + ": %"
                                 + downloadPercentage.getAndIncrement()
                         );
                         Thread.sleep(150);
                         if (downloadPercentage.get() >= 100)
-                            isComplete[0] = true;
+                            isComplete.set(true);
                     }
                     System.out.println(fileNames[index] + " is Done");
                     countDownLatch.countDown();
