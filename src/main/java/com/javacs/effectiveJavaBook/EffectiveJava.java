@@ -9,16 +9,16 @@ public class EffectiveJava {
 
     static class CoffeeOrder {
 
-        private final String type;
-        private final int size;
-        private final boolean hot;
+        private final String    type;
+        private final int       size;
+        private final boolean   hot;
 
         private CoffeeOrder(String type,
                            int size,
                            boolean hot) {
             this.type = type;
             this.size = size;
-            this.hot = hot;
+            this.hot  = hot;
         }
 
         public static CoffeeOrder espresso() {
@@ -34,7 +34,10 @@ public class EffectiveJava {
         }
 
         private static final CoffeeOrder DEFAULT_ESPRESSO
-                = new CoffeeOrder("espresso", 30, true);
+                = new CoffeeOrder(
+                        "espresso", 30, true
+        );
+
         public static CoffeeOrder defaultEspresso() {
             return DEFAULT_ESPRESSO;
         }
@@ -43,6 +46,57 @@ public class EffectiveJava {
             return (hot ? "Hot" : "Iced")
                     + " " + type
                     + "(" + size + ")";
+        }
+
+    }
+
+    @SuppressWarnings("all") static class NutritionFood {
+        /*
+         * Why is it elegant?
+         *
+         * Every parameter has a name—nothing is ambiguous.
+         * Mandatory parameters are in the Builder constructor—they won't be forgotten.
+         * The final object is immutable—making it thread-safe.
+         * Code readability is high—as the book puts it:
+         *     - "simulates named optional parameters as found in Python and Scala."
+         */
+        private final int servingSize;
+        private final int servings;
+        private final int calories;
+        private final int fat;
+        private final int sodium;
+        private final int carbohydrate;
+
+        private NutritionFood(Builder builder) {
+            servingSize  = builder.servingSize;
+            servings     = builder.servings;
+            calories     = builder.calories;
+            fat          = builder.fat;
+            sodium       = builder.sodium;
+            carbohydrate = builder.carbohydrate;
+        }
+
+        public static class Builder {
+            private final int servingSize;
+            private final int servings;
+            private int calories     = 0;
+            private int fat          = 0;
+            private int sodium       = 0;
+            private int carbohydrate = 0;
+
+            public Builder(int servingSize, int servings) {
+                this.servingSize = servingSize;
+                this.servings    = servings;
+            }
+
+            public Builder calories(int val)     { calories = val;     return this; }
+            public Builder fat(int val)          { fat = val;          return this; }
+            public Builder sodium(int val)       { sodium = val;       return this; }
+            public Builder carbohydrate(int val) { carbohydrate = val; return this; }
+
+            public NutritionFood build() {
+                return new NutritionFood(this);
+            }
         }
     }
 }
