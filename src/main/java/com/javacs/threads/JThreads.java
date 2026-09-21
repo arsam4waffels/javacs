@@ -1,6 +1,7 @@
 package com.javacs.threads;
 
 import java.util.Arrays;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -645,5 +646,14 @@ public class JThreads {
         catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public Integer getInt() {
+        return 0;
+    }
+
+    public void completableFutureThread() {
+        CompletableFuture<Integer> completableFuture =
+                CompletableFuture.supplyAsync(this::getInt);
     }
 }
