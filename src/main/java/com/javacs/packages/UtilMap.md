@@ -66,3 +66,16 @@ Double.isFinite(3.14)          // → true
 
 Double.MAX_VALUE               // → 1.7976931348623157E308
 Double.MIN_VALUE               // → 4.9E-324 (least positive)
+
+# Character Wrapper cheat sheet
+
+Character.isLetter('A')        // → true
+Character.isDigit('5')         // → true
+Character.isLetterOrDigit('A') // → true
+Character.isWhitespace(' ')    // → true
+Character.isUpperCase('A')     // → true
+Character.isLowerCase('a')     // → true
+
+Character.toUpperCase('a')     // → 'A'
+Character.toLowerCase('A')     // → 'a'
+Character.getNumericValue('7') // → 7
