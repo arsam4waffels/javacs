@@ -79,3 +79,11 @@ Character.isLowerCase('a')     // → true
 Character.toUpperCase('a')     // → 'A'
 Character.toLowerCase('A')     // → 'a'
 Character.getNumericValue('7') // → 7
+
+# Boolean Wrapper cheat sheet
+
+Boolean.parseBoolean("true")   // → true
+Boolean.parseBoolean("True")   // → true  (case-insensitive)
+Boolean.parseBoolean("yes")    // → false (only recognize "true")
+Boolean.toString(true)         // → "true"
+Boolean.compare(true, false)   // (true > false) +
