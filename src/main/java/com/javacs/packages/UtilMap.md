@@ -53,3 +53,16 @@ Integer.MAX_VALUE              // → 2,147,483,647
 Integer.MIN_VALUE              // → -2,147,483,648
 Integer.SIZE                   // → 32  (bit)
 Integer.BYTES                  // → 4   (byte)
+
+# Double Wrapper cheat sheet
+
+Double.parseDouble("3.14")     // String → double
+Double.valueOf("3.14")         // String → Double (Object)
+Double.toString(3.14)          // double → String
+
+Double.isNaN(0.0 / 0.0)       // → true  (Not a Number)
+Double.isInfinite(1.0 / 0.0)  // → true  (unlimited)
+Double.isFinite(3.14)          // → true
+
+Double.MAX_VALUE               // → 1.7976931348623157E308
+Double.MIN_VALUE               // → 4.9E-324 (least positive)
