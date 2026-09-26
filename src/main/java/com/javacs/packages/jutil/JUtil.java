@@ -71,3 +71,16 @@ class MyArrays {
         return Arrays.equals(list1, list2);
     }
 }
+class MyStringBuilder {
+
+    public void stringInLoop(String s) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.repeat(String.valueOf(s), 10);
+        String result = stringBuilder.toString();
+    }
+
+    public void deleteCharStringBuilder(StringBuilder stringBuilder,
+                                        int index) {
+        stringBuilder.deleteCharAt(index);
+    }
+}
