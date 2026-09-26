@@ -84,3 +84,29 @@ class MyStringBuilder {
         stringBuilder.deleteCharAt(index);
     }
 }
+
+class MyCat {
+    private final String name;
+    private final String color;
+    public MyCat(String name, String color) {
+        this.name = name;
+        this.color = color;
+    }
+    @Override public String toString() {
+        return "Cat{name:" + name + ",color:" + color + "}";
+    }
+
+    @Override public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null) return false;
+        if (!(object instanceof MyCat)) return false;
+
+        MyCat other = (MyCat) object;
+        return this.name.equals(other.name)
+                && this.color.equals(other.color);
+    }
+
+    @Override public int hashCode() {
+        return Objects.hash(name, color);
+    }
+}
