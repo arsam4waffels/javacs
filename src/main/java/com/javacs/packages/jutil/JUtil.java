@@ -2,7 +2,10 @@ package com.javacs.packages.jutil;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 public class JUtil {
@@ -108,5 +111,32 @@ class MyCat {
 
     @Override public int hashCode() {
         return Objects.hash(name, color);
+    }
+}
+class Exercise {
+    public static @NotNull List<List<String>> grouping(@NotNull ArrayList<String> arrayList) {
+        List<Character> startingChar = new ArrayList<>();
+        for (String item : arrayList) {
+            char myChar = item.charAt(0);
+            if (!startingChar.contains(myChar))
+                startingChar.add(myChar);
+        }
+        List<List<String>> group = new ArrayList<>();
+        for (Character character : startingChar) {
+            List<String> groupHandler = new ArrayList<>();
+            for (String item : arrayList) {
+                if (item.charAt(0) == character)
+                    groupHandler.add(item);
+            }
+            group.add(groupHandler);
+        }
+        return group;
+    }
+    public static void main(String[] args) {
+
+        ArrayList<String> names = new ArrayList<>(
+                List.of("Arsam", "Ali", "Sara", "Sina", "Oreo", "Omar")
+        );
+        System.out.println(grouping(names));
     }
 }
