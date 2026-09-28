@@ -101,8 +101,30 @@ public class JFiles {
         } // ?
 
         public Path pathNameIndex(int index) {
+            /*
+             * Path path = Path.of(
+             *         "User",
+             *         "Projects",
+             *         "enrichable.java"
+             * );
+             *
+             * path[0] -> User
+             * path[1] -> Projects
+             * path[2] -> enrichable.java
+             */
             return path.getName(index);
-        } // example : [0] -> projects || [4] -> Main.java
+        }
+
+        public void pathPrintWithLoop() {
+
+            for (int i = 0; i < path.getNameCount(); i++) {
+                System.out.printf(
+                        "[%d] : %s",
+                        i,
+                        path.getName(i)
+                );
+            }
+        } // Path is iterable
 
         public Path pathSubPath(int start, int end) {
             if (start < end) {
@@ -152,6 +174,13 @@ public class JFiles {
             return path
                     .normalize()
                     .toAbsolutePath();
+            /*
+             * Now why is .resolve() better comparing to string concatenation :
+             *      [1] Manages the separator manually
+             *      [2] Eliminates the Path abstraction
+             *      [3] Is error-prone
+             *      [4] Does not account for filesystem semantics
+             */
         }
 
         Path from     = Path.of("projects/java");
