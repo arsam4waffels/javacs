@@ -3,6 +3,7 @@ package com.javacs.concepts.files;
 import com.javacs.annotions.review;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -47,6 +48,15 @@ public class JFiles {
 
         @review public Path pathRoot() {
             return path.getRoot();
+        } // ?
+
+        /**
+         * <p>real engagement with filesystem</p>
+         * @return realPath
+         * @throws IOException
+         */
+        @review public Path pathToReal() throws IOException {
+            return path.toRealPath();
         } // ?
 
         public Path pathNameIndex(int index) {
