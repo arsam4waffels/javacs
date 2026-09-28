@@ -25,6 +25,39 @@ public class JFiles {
      * <p>{@code Files} -> What to be done with it</p>
      */
     static class LearnPath {
+        /*
+         * Path
+         * │
+         * ├── creation
+         * │   ├── Path.of()
+         * │   └── Path.of(first, more...)
+         * │
+         * ├── analyze
+         * │   ├── getFileName()
+         * │   ├── getParent()
+         * │   ├── getRoot()
+         * │   └── getName(...)
+         * │
+         * ├── convert
+         * │   ├── toAbsolutePath()
+         * │   ├── toRealPath()
+         * │   └── normalize()
+         * │
+         * ├── concat
+         * │   ├── resolve()
+         * │   └── resolveSibling()
+         * │
+         * ├── relations
+         * │   └── relativize()
+         * │
+         * ├── checking
+         * │   ├── isAbsolute()
+         * │   └── startsWith() / endsWith()
+         * │
+         * └── convert
+         *     ├── toString()
+         *     └── toFile()
+         */
         Path path_1 = Path.of("notes.txt");
         Path path_2 = Path.of("documents/java/notes.txt");
 
@@ -53,22 +86,56 @@ public class JFiles {
             return path.getParent();
         } // projects/java/file-manager/src
 
-        @review public Path pathRoot() {
+        public Path pathRoot() {
+            // works with absolute path, else return null
             return path.getRoot();
-        } // ?
+        } // "C:\\User\Oreo\Meow.txt" -> C:\\
 
         /**
          * <p>real engagement with filesystem</p>
          * @return realPath
-         * @throws IOException
          */
-        @review public Path pathToReal() throws IOException {
+        public Path pathToReal() throws IOException {
+            /*
+             * The path must exist.
+             * Symbolic links are resolved.
+             * The canonical/actual filesystem path is obtained.
+             */
             return path.toRealPath();
-        } // ?
+        }
+
+        /*
+         * API	             |   Checks the filesystem?	  |  Purpose
+         * normalize()	     |   No	                      |  Lexical simplification
+         * toAbsolutePath()	 |   Usually no	              |  Converting to absolute path
+         * toRealPath()	     |   Yes	                  |  Actual filesystem path
+         */
 
         public Path pathNameIndex(int index) {
+            /*
+             * Path path = Path.of(
+             *         "User",
+             *         "Projects",
+             *         "enrichable.java"
+             * );
+             *
+             * path[0] -> User
+             * path[1] -> Projects
+             * path[2] -> enrichable.java
+             */
             return path.getName(index);
-        } // example : [0] -> projects || [4] -> Main.java
+        }
+
+        public void pathPrintWithLoop() {
+
+            for (int i = 0; i < path.getNameCount(); i++) {
+                System.out.printf(
+                        "[%d] : %s",
+                        i,
+                        path.getName(i)
+                );
+            }
+        } // Path is iterable
 
         public Path pathSubPath(int start, int end) {
             if (start < end) {
@@ -118,6 +185,13 @@ public class JFiles {
             return path
                     .normalize()
                     .toAbsolutePath();
+            /*
+             * Now why is .resolve() better comparing to string concatenation :
+             *      [1] Manages the separator manually
+             *      [2] Eliminates the Path abstraction
+             *      [3] Is error-prone
+             *      [4] Does not account for filesystem semantics
+             */
         }
 
         Path from     = Path.of("projects/java");
