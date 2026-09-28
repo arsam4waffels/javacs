@@ -232,5 +232,27 @@ public class JFiles {
                 lines.forEach(System.out::println);
             }
         }
+
+        /*
+         * Reading byte files (small files)
+         *      [1] small image
+         *      [2] small encrypted file
+         *      [3] small binary file
+         *      [4] hash input
+         *
+         * for larger files -> readAllBytes()
+         */
+
+        public void filesReadBytes(Path path) throws IOException {
+            byte[] data = Files.readAllBytes(path);
+        }
+
+        public void filesWriteBytes(Path path, byte[] data) throws IOException {
+            // no encoding needed because we are working with binary
+            Files.write(
+                    path,
+                    data
+            );
+        }
     }
 }
