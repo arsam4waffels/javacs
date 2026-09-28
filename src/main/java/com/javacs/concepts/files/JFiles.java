@@ -3,12 +3,15 @@ package com.javacs.concepts.files;
 import com.javacs.annotions.review;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.List;
+import java.util.stream.Stream;
 
 public class JFiles {
     /**
@@ -197,6 +200,37 @@ public class JFiles {
              */
         }
 
+        public void filesReadLines(Path path) throws IOException {
+            List<String> lines = Files.readAllLines(
+                    path,
+                    StandardCharsets.UTF_8
+            );
+            for (String line : lines)
+                System.out.printf(line);
+        }
 
+        public void filesReadLinesLambda(Path path) throws IOException {
+            List<String> lines = Files.readAllLines(
+                    path,
+                    StandardCharsets.UTF_8
+            );
+            lines.forEach(System.out::println);
+        }
+
+        /*
+         * [ALERT] -> Loading the entire file into memory completely and simultaneously
+         *
+         * `readAllLines` It reads the entire file and loads it all into memory,
+         *  which is risky and represents poor design for large, heavy files.
+         *
+         * For large files, it is better to use `Files.lines()`, as it loads
+         * data into memory incrementally using a stream.
+         */
+
+        public void filesReadLinesMassive(Path path) throws IOException {
+            try (Stream<String> lines = Files.lines(path)) {
+                lines.forEach(System.out::println);
+            }
+        }
     }
 }
