@@ -25,6 +25,39 @@ public class JFiles {
      * <p>{@code Files} -> What to be done with it</p>
      */
     static class LearnPath {
+        /*
+         * Path
+         * │
+         * ├── creation
+         * │   ├── Path.of()
+         * │   └── Path.of(first, more...)
+         * │
+         * ├── analyze
+         * │   ├── getFileName()
+         * │   ├── getParent()
+         * │   ├── getRoot()
+         * │   └── getName(...)
+         * │
+         * ├── convert
+         * │   ├── toAbsolutePath()
+         * │   ├── toRealPath()
+         * │   └── normalize()
+         * │
+         * ├── concat
+         * │   ├── resolve()
+         * │   └── resolveSibling()
+         * │
+         * ├── relations
+         * │   └── relativize()
+         * │
+         * ├── checking
+         * │   ├── isAbsolute()
+         * │   └── startsWith() / endsWith()
+         * │
+         * └── convert
+         *     ├── toString()
+         *     └── toFile()
+         */
         Path path_1 = Path.of("notes.txt");
         Path path_2 = Path.of("documents/java/notes.txt");
 
