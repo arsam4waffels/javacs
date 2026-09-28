@@ -296,5 +296,10 @@ public class JFiles {
                     StandardCopyOption.REPLACE_EXISTING
             );
         }
+
+        public void filesDirectory(Path path, int choice) throws IOException {
+            if (choice == 0) Files.createDirectory(path);
+            else Files.createDirectories(path);
+        }
     }
 }
