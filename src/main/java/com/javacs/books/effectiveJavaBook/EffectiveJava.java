@@ -1,4 +1,4 @@
-package com.javacs.effectiveJavaBook;
+package com.javacs.books.effectiveJavaBook;
 
 import java.util.EnumSet;
 import java.util.Objects;
