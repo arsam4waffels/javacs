@@ -1,6 +1,7 @@
 package com.javacs.concepts.files;
 
 import com.javacs.annotions.review;
+import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -8,13 +9,18 @@ import java.nio.file.Paths;
 public class JFiles {
     /**
      * <h5>Path</h5>
-     * <p>A {@code Path} is just an address on the file system. It doesn't touch any files
+     * <p><b>A {@code Path} is just an address on the file system.</b> It doesn't touch any files
      * or read anything; it simply indicates where that path is located.</p>
      * <p>The path represents <b>location</b>, not <b>content</b>.</p>
+     *
+     * <p>{@code Path}  -> Where is it</p>
+     * <p>{@code Files} -> What to be done with it</p>
      */
     static class LearnPath {
         Path path_1 = Path.of("notes.txt");
         Path path_2 = Path.of("documents/java/notes.txt");
+
+        // it is recommended to initialize path with separator
         Path path_3 = Path.of(
                 "documents",
                 "java",
@@ -73,6 +79,20 @@ public class JFiles {
         public Path pathResolveNormal(Path newPath) {
             return path.resolve(newPath).normalize();
         } // concat to paths and normalize it
+        public Path pathResolver(Path @NotNull ... paths) {
+            if (paths.length == 0)
+                throw new IllegalArgumentException(
+                        "At least one path is required"
+                );
+
+            Path path = paths[0];
+            for (Path value : paths) {
+                path = path.resolve(value);
+            }
+            return path
+                    .normalize()
+                    .toAbsolutePath();
+        }
 
         Path from     = Path.of("projects/java");
         Path to       = Path.of("projects/kotlin/src/Main.kt");
