@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
+import java.nio.file.attribute.FileTime;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -305,6 +306,39 @@ public class JFiles {
         public void filesDelete(Path path, boolean notSureExist) throws IOException {
             if (notSureExist) Files.deleteIfExists(path);
             else Files.delete(path);
+        }
+
+        static class FilesMetadata {
+
+            private final Path path;
+
+            public FilesMetadata(Path path) {
+                this.path = path;
+            }
+
+            public long getFilesSize() throws IOException {
+                return Files.size(path);
+            }
+
+            public long getFilesLastModified() throws IOException {
+                return Files.getLastModifiedTime(path).toMillis();
+            }
+
+            public boolean getFilesIsReadable() throws IOException {
+                return Files.isReadable(path);
+            }
+
+            public boolean getFilesIsWritable() throws IOException {
+                return Files.isWritable(path);
+            }
+
+            public boolean getFilesIsExecutable() throws IOException {
+                return Files.isExecutable(path);
+            }
+
+            public boolean filesCheckSameFile(Path path1, Path path2) throws IOException {
+                return Files.isSameFile(path1, path2);
+            }
         }
     }
 }
