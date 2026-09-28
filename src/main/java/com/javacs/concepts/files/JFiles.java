@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -253,6 +254,18 @@ public class JFiles {
                     path,
                     data
             );
+        }
+
+        public void filesStreamInput(Path path) throws IOException {
+            try (InputStream inputStream = Files.newInputStream(path)) {
+
+                byte[] buffer = new byte[8192];
+                int byteRead;
+
+                while ((byteRead = inputStream.read(buffer)) != -1) {
+                    // TODO
+                }
+            }
         }
     }
 }
