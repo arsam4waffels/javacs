@@ -76,9 +76,18 @@ public class JFiles {
         public Path pathResolve(Path newPath) {
             return path.resolve(newPath);
         } // concat to paths
+
         public Path pathResolveNormal(Path newPath) {
             return path.resolve(newPath).normalize();
         } // concat to paths and normalize it
+
+        /**
+         * <p>Concat a serial of paths onto one.</p>
+         * <p><b>Note:</b> concatenation paths using String is wrong.
+         * it's much better and safer to user {@code p.resolve()} for it.</p>
+         * @param paths
+         * @return new set of path
+         */
         public Path pathResolver(Path @NotNull ... paths) {
             if (paths.length == 0)
                 throw new IllegalArgumentException(
