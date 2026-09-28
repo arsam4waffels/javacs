@@ -4,8 +4,11 @@ import com.javacs.annotions.review;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 
 public class JFiles {
     /**
@@ -121,5 +124,79 @@ public class JFiles {
             String fileName = path.getFileName().toString();
             return fileName.endsWith(".java");
         }
+    }
+
+    static class LearnFiles {
+
+        public boolean filesExist(Path path) {
+            return Files.exists(path); // == !Files.notExists(path)
+        } // checks whether the file exists at the specified address
+
+        /*
+         * TOCTOU (not to be misunderstood with Hawk Tuah)
+         *      — Time Of Check To Time Of Use
+         *
+         * The file might be deleted by another process.
+         */
+
+        public void filesReadSmallFiles(Path path) throws IOException {
+            /*
+             * It's better to explicitly specify the charset.
+             * encoding is part of files contract.
+             */
+            String content = Files.readString(
+                    path,
+                    StandardCharsets.UTF_8
+            );
+
+            System.out.printf(content);
+        }
+
+        public void filesWriteString(Path path, String content) throws IOException {
+            /*
+             * [ALERT] -> Risk of data loss
+             *
+             * This method deletes all existing content and data from the file (if any)
+             * and overwrites it with the new content and data.
+             */
+            Files.writeString(
+                    path,
+                    content,
+                    StandardCharsets.UTF_8
+            );
+        }
+
+        public void filesWriteStringAppend(Path path,
+                                           String content) throws IOException {
+
+            /*
+             * Here, new information is added to the existing file without deleting the old data.
+             * WRITE    -> replace
+             * APPEND   -> add to end
+             */
+            Files.writeString(
+                    path,
+                    content,
+                    StandardCharsets.UTF_8,
+                    StandardOpenOption.CREATE,
+                    StandardOpenOption.APPEND
+            );
+            /*
+             * @review
+             * CREATE               -> create new file, if it doesn't exist
+             * CREATE_NEW           -> create new file under any circumstanced
+             *                      -> throw [FileAlreadyExistsException] if exist
+             * TRUNCATE_EXISTING    -> clear files information, if it exists
+             * APPEND               ->
+             * WRITE                ->
+             * READ                 ->
+             * DELETE_ON_CLOSE      ->
+             * SYNC                 ->
+             * DSYNC                ->
+             * SPARSE               ->
+             */
+        }
+
+
     }
 }
