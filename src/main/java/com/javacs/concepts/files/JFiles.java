@@ -3,7 +3,6 @@ package com.javacs.concepts.files;
 import com.javacs.annotions.review;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -12,7 +11,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
-import java.nio.file.attribute.FileTime;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -340,5 +338,21 @@ public class JFiles {
                 return Files.isSameFile(path1, path2);
             }
         }
+
+        /*
+         * Java Files Exceptions
+         *      [1] NoSuchFileException
+         *      [2] FileAlreadyExistsException
+         *      [3] AccessDeniedException
+         *      [4] DirectoryNotEmptyException
+         *      [5] NotDirectoryException
+         *
+         * catch (NoSuchFileException e) { <- more specific one comes first
+         *     ...
+         *
+         * catch (IOException e) {
+         *     ...
+         *
+         */
     }
 }
