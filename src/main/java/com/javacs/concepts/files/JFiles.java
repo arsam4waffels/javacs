@@ -94,11 +94,22 @@ public class JFiles {
         /**
          * <p>real engagement with filesystem</p>
          * @return realPath
-         * @throws IOException
          */
-        @review public Path pathToReal() throws IOException {
+        public Path pathToReal() throws IOException {
+            /*
+             * The path must exist.
+             * Symbolic links are resolved.
+             * The canonical/actual filesystem path is obtained.
+             */
             return path.toRealPath();
-        } // ?
+        }
+
+        /*
+         * API	             |   Checks the filesystem?	  |  Purpose
+         * normalize()	     |   No	                      |  Lexical simplification
+         * toAbsolutePath()	 |   Usually no	              |  Converting to absolute path
+         * toRealPath()	     |   Yes	                  |  Actual filesystem path
+         */
 
         public Path pathNameIndex(int index) {
             /*
