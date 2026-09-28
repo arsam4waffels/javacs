@@ -86,9 +86,10 @@ public class JFiles {
             return path.getParent();
         } // projects/java/file-manager/src
 
-        @review public Path pathRoot() {
+        public Path pathRoot() {
+            // works with absolute path, else return null
             return path.getRoot();
-        } // ?
+        } // "C:\\User\Oreo\Meow.txt" -> C:\\
 
         /**
          * <p>real engagement with filesystem</p>
