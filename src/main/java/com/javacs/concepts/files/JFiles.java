@@ -10,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.stream.Stream;
@@ -266,6 +267,34 @@ public class JFiles {
                     // TODO
                 }
             }
+        }
+
+        /*
+         * Atomic-ish / transactional file update pattern
+         *
+         *     config.tmp
+         *     ↓
+         *     write completely
+         *     ↓
+         *     move
+         *     ↓
+         *     config.properties
+        */
+
+        public void filesCopy(Path source, Path target) throws IOException {
+            Files.copy(
+                    source,
+                    target,
+                    StandardCopyOption.REPLACE_EXISTING
+            );
+        }
+
+        public void filesMove(Path source, Path target) throws IOException {
+            Files.move(
+                    source,
+                    target,
+                    StandardCopyOption.REPLACE_EXISTING
+            );
         }
     }
 }
