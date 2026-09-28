@@ -1,4 +1,4 @@
-package com.javacs.functions;
+package com.javacs.concepts.functions;
 
 import java.util.Arrays;
 import java.util.List;

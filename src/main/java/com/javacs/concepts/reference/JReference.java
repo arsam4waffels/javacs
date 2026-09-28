@@ -1,4 +1,4 @@
-package com.javacs.reference;
+package com.javacs.concepts.reference;
 
 import java.util.ArrayList;
 import java.util.Comparator;

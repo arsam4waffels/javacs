@@ -1,4 +1,4 @@
-package com.javacs.threads;
+package com.javacs.concepts.threads;
 
 import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
