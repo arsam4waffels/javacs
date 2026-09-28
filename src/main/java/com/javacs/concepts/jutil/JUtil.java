@@ -1,10 +1,9 @@
-package com.javacs.packages.jutil;
+package com.javacs.concepts.jutil;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 

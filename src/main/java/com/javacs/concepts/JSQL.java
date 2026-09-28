@@ -1,4 +1,4 @@
-package com.javacs;
+package com.javacs.concepts;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

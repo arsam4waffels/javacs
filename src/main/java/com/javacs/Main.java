@@ -1,6 +1,6 @@
 package com.javacs;
 
-import com.javacs.threads.JThreads;
+import com.javacs.concepts.threads.JThreads;
 
 // Time spent with cats is never wasted.
 public class Main {

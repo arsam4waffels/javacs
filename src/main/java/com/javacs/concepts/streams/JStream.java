@@ -1,4 +1,4 @@
-package com.javacs.streams;
+package com.javacs.concepts.streams;
 
 import java.util.Arrays;
 import java.util.Collection;
