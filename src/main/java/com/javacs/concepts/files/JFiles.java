@@ -355,4 +355,41 @@ public class JFiles {
          *
          */
     }
+    /*
+     * Keynotes
+     *
+     * 1. Path = location
+     *    Files = operation
+     *
+     * 2. Construct paths using `resolve`, not string concatenation.
+     *
+     * 3. Explicitly specify the encoding for text.
+     *
+     * 4. Resource → try-with-resources
+     *
+     * 5. Small file → `readString`/`readAllBytes`
+     *    Large file → stream
+     *
+     * 6. Overwrite ≠ append
+     *    Clearly understand the `OpenOption` choices.
+     *
+     * 7. `createDirectory` ≠ `createDirectories`
+     *
+     * 8. `delete` ≠ `deleteIfExists`
+     *
+     * 9. `list` ≠ `walk` ≠ `find`
+     *
+     * 10. Sensitive file → temp + move
+     *
+     * 11. User input + Path → normalize + containment check
+     *
+     * 12. Do not scatter the Files API throughout the entire application.
+     *     Encapsulate it behind a suitable abstraction.
+     *
+     * 13. Inject the Path to make the code testable.
+     *
+     * 14. Do not swallow exceptions.
+     *
+     * 15. Do not rely on `exists()` as a security check.
+     */
 }
