@@ -301,5 +301,10 @@ public class JFiles {
             if (choice == 0) Files.createDirectory(path);
             else Files.createDirectories(path);
         }
+
+        public void filesDelete(Path path, boolean notSureExist) throws IOException {
+            if (notSureExist) Files.deleteIfExists(path);
+            else Files.delete(path);
+        }
     }
 }
