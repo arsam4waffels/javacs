@@ -9,6 +9,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Reader;
 import java.nio.Buffer;
 import java.nio.charset.StandardCharsets;
@@ -561,6 +562,24 @@ public class JFiles {
                     target,
                     StandardCopyOption.REPLACE_EXISTING
             );
+        }
+
+        public void filesCopyPasteContent(Path source, Path target) throws IOException {
+            try (
+                    InputStream inputStream = Files.newInputStream(source);
+                    OutputStream outputStream = Files.newOutputStream(target)
+            ) {
+
+                byte[] buffer = new byte[8129];
+                int byteRead;
+
+                while ((byteRead = inputStream.read(buffer)) != -1)
+                    outputStream.write(
+                            buffer,
+                            0,
+                            byteRead
+                    );
+            }
         }
 
         public void filesDirectory(Path path, int choice) throws IOException {
