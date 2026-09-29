@@ -363,6 +363,19 @@ public class JFiles {
             }
         }
 
+        public void filesBufferReader(Path path) throws IOException {
+            /*
+            * sz: 8129  -> almost 8KB
+            *           -> bigger buffer != faster buffer
+            * */
+            try (
+                    BufferedReader reader = Files.newBufferedReader(path);
+                    BufferedReader bufferedReader = new BufferedReader(reader, 8129)
+            ) {
+                bufferedReader.readLine();
+            }
+        }
+
         public void filesFlush(Path path, String content) throws IOException {
 
             try (
@@ -372,7 +385,10 @@ public class JFiles {
                 bufferedWriter.write(content);
                 bufferedWriter.flush();
                 /*
-                * flush -> push the pending data to down layers
+                * flush     -> push the pending data to down layers
+                * close     -> flush and close the resource
+                *
+                * close = flush + closing
                 * */
             }
         }
