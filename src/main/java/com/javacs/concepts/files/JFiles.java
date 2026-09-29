@@ -1,10 +1,17 @@
 package com.javacs.concepts.files;
 
 import com.javacs.annotions.review;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Reader;
+import java.nio.Buffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -202,9 +209,89 @@ public class JFiles {
             String fileName = path.getFileName().toString();
             return fileName.endsWith(".java");
         }
+
+        static final class PathPractice {
+
+            Path root = Path.of("data");
+
+            private Path create() {
+                root = root
+                        .resolve("user")
+                        .resolve("arsam")
+                        .resolve("config.properties");
+
+                return root;
+            }
+
+            @Contract(pure = true) private @NotNull Path convertAbs() {
+                return root.toAbsolutePath();
+            }
+
+            @Contract(pure = true) private @NotNull Path normalize() {
+                return root.normalize();
+            }
+        }
     }
 
     static class LearnFiles {
+        /**
+         * File I/O
+         * │
+         * ├── 1. data type
+         * │   ├── Text
+         * │   └── Binary
+         * │
+         * ├── 2. Reading
+         * │   ├── Files.readString
+         * │   ├── Files.readAllLines
+         * │   ├── BufferedReader
+         * │   ├── InputStream
+         * │   └── BufferedInputStream
+         * │
+         * ├── 3. Writing
+         * │   ├── Files.writeString
+         * │   ├── Files.write
+         * │   ├── BufferedWriter
+         * │   ├── OutputStream
+         * │   └── BufferedOutputStream
+         * │
+         * ├── 4. Buffering
+         * │   ├── buffer size
+         * │   ├── flush
+         * │   └── close
+         * │
+         * ├── 5. Resource Management
+         * │   ├── AutoCloseable
+         * │   ├── try-with-resources
+         * │   └── ownership
+         * │
+         * ├── 6. Correctness
+         * │   ├── Charset
+         * │   ├── OpenOption
+         * │   ├── EOF
+         * │   └── partial reads/writes
+         * │
+         * ├── 7. Security
+         * │   ├── Path traversal
+         * │   ├── permissions
+         * │   ├── symlink
+         * │   └── TOCTOU
+         * │
+         * └── 8. Architecture
+         *     ├── Repository
+         *     ├── abstraction
+         *     ├── error handling
+         *     └── testability
+         */
+
+        public static byte @NotNull [] convertStrToByte(@NotNull String s) {
+            return s.getBytes(StandardCharsets.UTF_8);
+        }
+
+        @Contract(value = "_ -> new", pure = true)
+        public static @NotNull String convertByteToStr(byte[] bytes) {
+            return new String(bytes, StandardCharsets.UTF_8);
+        }
 
         public boolean filesExist(Path path) {
             return Files.exists(path); // == !Files.notExists(path)
@@ -230,6 +317,83 @@ public class JFiles {
             System.out.printf(content);
         }
 
+        public void filesReadBigFiles(Path path) throws IOException {
+            try (BufferedReader bufferedReader =
+                         Files.newBufferedReader(path, StandardCharsets.UTF_8)
+            ) {
+                /*
+                 * File
+                 *  ↓
+                 * Reader
+                 *  ↓
+                 * BufferedReader
+                 */
+                String line;
+                while ((line = bufferedReader.readLine()) != null)
+                    System.out.println(line);
+                /*
+                * null -> no more lines left
+                * ↓
+                * EOF  -> End Of File :: readLine() == null
+                *
+                * reader.ready() -> is not suitable for detecting eof
+                * ↓
+                * :: can we read something without getting blocked? != is it done
+                *
+                * */
+            }
+        }
+
+        /*
+        * Reader    -> character-oriented input
+        *           -> A set of character that are readable
+        * */
+
+        public void filesBufferWriter(Path path, String content) throws IOException {
+            try (BufferedWriter bufferedWriter =
+                    Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
+
+                bufferedWriter.write(content);
+                bufferedWriter.newLine();
+                /*
+                * newLine() -> System.out.print("\n");
+                *           -> an abstraction related to line separator
+                * ↓
+                * for 'portable' codes, newLine is much more semantic choice
+                * */
+            }
+        }
+
+        public void filesBufferReader(Path path) throws IOException {
+            /*
+            * sz: 8129  -> almost 8KB
+            *           -> bigger buffer != faster buffer
+            * */
+            try (
+                    BufferedReader reader = Files.newBufferedReader(path);
+                    BufferedReader bufferedReader = new BufferedReader(reader, 8129)
+            ) {
+                bufferedReader.readLine();
+            }
+        }
+
+        public void filesFlush(Path path, String content) throws IOException {
+
+            try (
+                    BufferedWriter writer = Files.newBufferedWriter(path);
+                    BufferedWriter bufferedWriter = new BufferedWriter(writer)
+            ) {
+                bufferedWriter.write(content);
+                bufferedWriter.flush();
+                /*
+                * flush     -> push the pending data to down layers
+                * close     -> flush and close the resource
+                *
+                * close = flush + closing
+                * */
+            }
+        }
+
         public void filesWriteString(Path path, String content) throws IOException {
             /*
              * [ALERT] -> Risk of data loss
@@ -243,6 +407,36 @@ public class JFiles {
                     StandardCharsets.UTF_8
             );
         }
+
+        // using buffer for binary files
+        public void filesBufferReaderBinary(Path path) throws IOException {
+            try (InputStream inputStream = Files.newInputStream(path)) {
+                byte[] buffer = new byte[8129];
+                int byteReads;
+                while ((byteReads = inputStream.read()) != -1)
+                    System.out.println(byteReads);
+            }
+        }
+
+        /*
+         * TEXT
+         *      String
+         *      ↓
+         *      Writer
+         *      ↓
+         *      BufferedWriter
+         *      ↓
+         *      File
+         *
+         * BINARY
+         *      byte[]
+         *      ↓
+         *      OutputStream
+         *      ↓
+         *      BufferedOutputStream
+         *      ↓
+         *      File
+        * */
 
         public void filesWriteStringAppend(Path path,
                                            String content) throws IOException {
@@ -369,6 +563,46 @@ public class JFiles {
                     StandardCopyOption.REPLACE_EXISTING
             );
         }
+
+        public void filesCopyPasteContent(Path source, Path target) throws IOException {
+            try (
+                    InputStream inputStream = Files.newInputStream(source);
+                    OutputStream outputStream = Files.newOutputStream(target)
+            ) {
+
+                byte[] buffer = new byte[8129];
+                int byteRead;
+
+                while ((byteRead = inputStream.read(buffer)) != -1)
+                    outputStream.write(
+                            buffer,
+                            0,
+                            byteRead
+                    );
+            }
+        }
+
+        /*
+         * High-level
+         *     Files.readString()
+         *     Files.copy()
+         *     Files.writeString()
+         *
+         *        ↓
+         *
+         * Mid-level
+         *     BufferedReader
+         *     BufferedWriter
+         *
+         *        ↓
+         *
+         * Low-level
+         *     InputStream
+         *     OutputStream
+         *     byte[]
+         *
+         * the further we go down, more control and more responsibility there is.
+         * */
 
         public void filesDirectory(Path path, int choice) throws IOException {
             if (choice == 0) Files.createDirectory(path);
