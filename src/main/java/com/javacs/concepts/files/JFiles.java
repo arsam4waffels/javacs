@@ -5,8 +5,12 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
+import java.nio.Buffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -343,6 +347,35 @@ public class JFiles {
         * Reader    -> character-oriented input
         *           -> A set of character that are readable
         * */
+
+        public void filesBufferWriter(Path path, String content) throws IOException {
+            try (BufferedWriter bufferedWriter =
+                    Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
+
+                bufferedWriter.write(content);
+                bufferedWriter.newLine();
+                /*
+                * newLine() -> System.out.print("\n");
+                *           -> an abstraction related to line separator
+                * ↓
+                * for 'portable' codes, newLine is much more semantic choice
+                * */
+            }
+        }
+
+        public void filesFlush(Path path, String content) throws IOException {
+
+            try (
+                    BufferedWriter writer = Files.newBufferedWriter(path);
+                    BufferedWriter bufferedWriter = new BufferedWriter(writer)
+            ) {
+                bufferedWriter.write(content);
+                bufferedWriter.flush();
+                /*
+                * flush -> push the pending data to down layers
+                * */
+            }
+        }
 
         public void filesWriteString(Path path, String content) throws IOException {
             /*
