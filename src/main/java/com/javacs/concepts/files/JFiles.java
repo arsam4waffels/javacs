@@ -4,6 +4,7 @@ import com.javacs.annotions.review;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -309,6 +310,23 @@ public class JFiles {
             );
 
             System.out.printf(content);
+        }
+
+        public void filesReadBigFiles(Path path) throws IOException {
+            try (BufferedReader bufferedReader =
+                         Files.newBufferedReader(path, StandardCharsets.UTF_8)
+            ) {
+                /*
+                 * File
+                 *  ↓
+                 * Reader
+                 *  ↓
+                 * BufferedReader
+                 */
+                String line;
+                while ((line = bufferedReader.readLine()) != null)
+                    System.out.println(line);
+            }
         }
 
         public void filesWriteString(Path path, String content) throws IOException {
