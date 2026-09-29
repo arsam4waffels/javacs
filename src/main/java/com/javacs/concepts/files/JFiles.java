@@ -228,6 +228,64 @@ public class JFiles {
     }
 
     static class LearnFiles {
+        /**
+         * File I/O
+         * │
+         * ├── 1. data type
+         * │   ├── Text
+         * │   └── Binary
+         * │
+         * ├── 2. Reading
+         * │   ├── Files.readString
+         * │   ├── Files.readAllLines
+         * │   ├── BufferedReader
+         * │   ├── InputStream
+         * │   └── BufferedInputStream
+         * │
+         * ├── 3. Writing
+         * │   ├── Files.writeString
+         * │   ├── Files.write
+         * │   ├── BufferedWriter
+         * │   ├── OutputStream
+         * │   └── BufferedOutputStream
+         * │
+         * ├── 4. Buffering
+         * │   ├── buffer size
+         * │   ├── flush
+         * │   └── close
+         * │
+         * ├── 5. Resource Management
+         * │   ├── AutoCloseable
+         * │   ├── try-with-resources
+         * │   └── ownership
+         * │
+         * ├── 6. Correctness
+         * │   ├── Charset
+         * │   ├── OpenOption
+         * │   ├── EOF
+         * │   └── partial reads/writes
+         * │
+         * ├── 7. Security
+         * │   ├── Path traversal
+         * │   ├── permissions
+         * │   ├── symlink
+         * │   └── TOCTOU
+         * │
+         * └── 8. Architecture
+         *     ├── Repository
+         *     ├── abstraction
+         *     ├── error handling
+         *     └── testability
+         */
+
+        public static byte @NotNull [] convertStrToByte(@NotNull String s) {
+            return s.getBytes(StandardCharsets.UTF_8);
+        }
+
+        @Contract(value = "_ -> new", pure = true)
+        public static @NotNull String convertByteToStr(byte[] bytes) {
+            return new String(bytes, StandardCharsets.UTF_8);
+        }
 
         public boolean filesExist(Path path) {
             return Files.exists(path); // == !Files.notExists(path)
