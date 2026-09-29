@@ -1,6 +1,7 @@
 package com.javacs.concepts.files;
 
 import com.javacs.annotions.review;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -201,6 +202,28 @@ public class JFiles {
         public boolean isJava() {
             String fileName = path.getFileName().toString();
             return fileName.endsWith(".java");
+        }
+
+        static final class PathPractice {
+
+            Path root = Path.of("data");
+
+            private Path create() {
+                root = root
+                        .resolve("user")
+                        .resolve("arsam")
+                        .resolve("config.properties");
+
+                return root;
+            }
+
+            @Contract(pure = true) private @NotNull Path convertAbs() {
+                return root.toAbsolutePath();
+            }
+
+            @Contract(pure = true) private @NotNull Path normalize() {
+                return root.normalize();
+            }
         }
     }
 
