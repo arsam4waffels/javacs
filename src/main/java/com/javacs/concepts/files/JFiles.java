@@ -407,6 +407,36 @@ public class JFiles {
             );
         }
 
+        // using buffer for binary files
+        public void filesBufferReaderBinary(Path path) throws IOException {
+            try (InputStream inputStream = Files.newInputStream(path)) {
+                byte[] buffer = new byte[8129];
+                int byteReads;
+                while ((byteReads = inputStream.read()) != -1)
+                    System.out.println(byteReads);
+            }
+        }
+
+        /*
+         * TEXT
+         *      String
+         *      ↓
+         *      Writer
+         *      ↓
+         *      BufferedWriter
+         *      ↓
+         *      File
+         *
+         * BINARY
+         *      byte[]
+         *      ↓
+         *      OutputStream
+         *      ↓
+         *      BufferedOutputStream
+         *      ↓
+         *      File
+        * */
+
         public void filesWriteStringAppend(Path path,
                                            String content) throws IOException {
 
