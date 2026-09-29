@@ -582,6 +582,28 @@ public class JFiles {
             }
         }
 
+        /*
+         * High-level
+         *     Files.readString()
+         *     Files.copy()
+         *     Files.writeString()
+         *
+         *        ↓
+         *
+         * Mid-level
+         *     BufferedReader
+         *     BufferedWriter
+         *
+         *        ↓
+         *
+         * Low-level
+         *     InputStream
+         *     OutputStream
+         *     byte[]
+         *
+         * the further we go down, more control and more responsibility there is.
+         * */
+
         public void filesDirectory(Path path, int choice) throws IOException {
             if (choice == 0) Files.createDirectory(path);
             else Files.createDirectories(path);
