@@ -326,8 +326,23 @@ public class JFiles {
                 String line;
                 while ((line = bufferedReader.readLine()) != null)
                     System.out.println(line);
+                /*
+                * null -> no more lines left
+                * ↓
+                * EOF  -> End Of File :: readLine() == null
+                *
+                * reader.ready() -> is not suitable for detecting eof
+                * ↓
+                * :: can we read something without getting blocked? != is it done
+                *
+                * */
             }
         }
+
+        /*
+        * Reader    -> character-oriented input
+        *           -> A set of character that are readable
+        * */
 
         public void filesWriteString(Path path, String content) throws IOException {
             /*
