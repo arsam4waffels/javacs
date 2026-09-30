@@ -27,6 +27,23 @@ public class JSecurity {
          *                           MAC
          *                           │
          *                           HMAC
+         *
+         *      [1] Authentication
+         *      [2] Authorization
+         *      [3] Certificates
+         *      [4] PKI
+         *      [5] TLS
+         *      [6] Key Management
+         *
+         *    Attacker
+         *    │
+         *    ├── Can read database?
+         *    ├── Can intercept network?
+         *    ├── Can modify files?
+         *    ├── Can execute code?
+         *    ├── Can steal device?
+         *    ├── Can access logs?
+         *    └── Can access memory?
          * */
     }
 }
