@@ -6,6 +6,63 @@ import java.security.Security;
 import java.util.Arrays;
 
 public class JSecurity {
+    /*
+     * java.security
+     * │
+     * ├── 1. basic information
+     * │   ├── Randomness
+     * │   ├── Entropy
+     * │   ├── Keys
+     * │   ├── Algorithms
+     * │   └── Providers
+     * │
+     * ├── 2. Random
+     * │   ├── SecureRandom
+     * │   ├── seed
+     * │   └── entropy
+     * │
+     * ├── 3. Message Digest
+     * │   ├── MessageDigest
+     * │   ├── SHA-256
+     * │   ├── SHA-512
+     * │   └── integrity
+     * │
+     * ├── 4. Digital Signature
+     * │   ├── Signature
+     * │   ├── signing
+     * │   ├── verification
+     * │   └── public/private key
+     * │
+     * ├── 5. Key Management
+     * │   ├── Key
+     * │   ├── PublicKey
+     * │   ├── PrivateKey
+     * │   ├── KeyPair
+     * │   ├── KeyFactory
+     * │   └── KeyPairGenerator
+     * │
+     * ├── 6. KeyStore
+     * │   ├── KeyStore
+     * │   ├── aliases
+     * │   ├── certificates
+     * │   └── private keys
+     * │
+     * ├── 7. Certificates
+     * │   ├── Certificate
+     * │   ├── X509Certificate
+     * │   └── CertificateFactory
+     * │
+     * ├── 8. Providers
+     * │   ├── Security
+     * │   ├── Provider
+     * │   └── algorithm implementations
+     * │
+     * └── 9. Advanced
+     *     ├── Secure coding
+     *     ├── policy
+     *     ├── permissions
+     *     └── JCA architecture
+     */
     static class Cryptography {
         /*
          *                        CRYPTOGRAPHY
