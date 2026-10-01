@@ -1,5 +1,7 @@
 package com.javacs.concepts;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.security.Provider;
 import java.security.SecureRandom;
 import java.security.Security;
@@ -204,5 +206,39 @@ public class JSecurity {
          *      ▼
          *      MessageDigest object
          */
+    }
+    static final class TokenGenerator {
+
+        private final SecureRandom secureRandom;
+
+        public TokenGenerator() {
+            this.secureRandom = new SecureRandom();
+        }
+        public byte @NotNull [] generate(int length) {
+            if (length <= 0)
+                throw new IllegalArgumentException(
+                        "length must be positive"
+                );
+
+            byte[] token = new byte[length];
+            secureRandom.nextBytes(token);
+
+            return token;
+        }
+        public void wipe(byte @NotNull [] array) {
+            /*
+             * For the best-effort clearing of a mutable byte array,
+             * `Arrays.fill` is the standard and logical pattern.
+             *
+             * Of course, we shouldn't assume that `Arrays.fill()` means the secret
+             * has definitely been wiped from all physical memory.
+             * */
+            Arrays.fill(array, (byte) 0);
+        }
+    }
+
+    public static void main(String[] args) {
+        TokenGenerator tokenGenerator = new TokenGenerator();
+        byte[] randoms = tokenGenerator.generate(4);
     }
 }
